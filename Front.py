@@ -49,11 +49,15 @@ class UI(tk.Frame):
                 return
 
             else:
-                primer_producto = self.lista_productos[0]
-                campo_de_texto_producto.insert(0,primer_producto.producto_id)
-                campo_de_texto_receptaculo.insert(0,primer_producto.contenedor_id)
-                campo_de_texto_pais.insert(0,primer_producto.pais)
-                campo_de_texto_peso.insert(0,primer_producto.peso)
+                try:
+                    primer_producto = self.lista_productos[0]
+                    campo_de_texto_producto.insert(0,primer_producto.producto_id)
+                    campo_de_texto_receptaculo.insert(0,primer_producto.contenedor_id)
+                    campo_de_texto_pais.insert(0,primer_producto.pais)
+                    campo_de_texto_peso.insert(0,primer_producto.peso)
+                except IndexError:
+                    print("Error: no hay nada en la lista")
+
 
 
         def funcion_enviar():
@@ -150,11 +154,11 @@ if __name__ == "__main__":
         sys.exit()    
         ROOT.destroy()
 
-
+    lista=[]
     ROOT = tk.Tk()
     ROOT.geometry("1000x600")
     ROOT.protocol("WM_DELETE_WINDOW", cerrar_ventana)
-    APP = UI([],parent=ROOT)
+    APP = UI(lista,parent=ROOT)
     APP.pack()
     APP.mainloop()
     ROOT.destroy()
