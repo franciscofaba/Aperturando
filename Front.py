@@ -4,7 +4,7 @@ from six.moves import tkinter as tk
 from tkinter import *
 from productos import construir_producto
 from tkinter import ttk
-
+import sys
 
 class UI(tk.Frame):
 
@@ -36,7 +36,7 @@ class UI(tk.Frame):
     
         def funcion_guardar():
             primer_producto = self.lista_productos[0]
-            tree.insert('', 'end', text="1", values=(primer_producto.producto_id, primer_producto.contenedor_id, primer_producto.pais, primer_producto.peso))
+            tree.insert('', 'end', text="1", values=(primer_producto.producto_id, primer_producto.contenedor_id, primer_producto.pais, primer_producto.peso, primer_producto.peso_preaviso, primer_producto.estado, primer_producto.pais_destino, primer_producto.fecha))
             campo_de_texto_producto.delete(0,10)
             campo_de_texto_receptaculo.delete(0,10)
             campo_de_texto_pais.delete(0,10)
@@ -57,7 +57,7 @@ class UI(tk.Frame):
 
 
         def funcion_enviar():
-            tree.delete(0,10)
+            tree.delete(*tree.get_children())
 
             return
 
@@ -101,19 +101,26 @@ class UI(tk.Frame):
         campo_de_texto_peso.get()
         
         
+        
 
         boton_insert = tk.Button(self.parent, text="insertar", command=funcion_insertar,  width=15).grid(pady=20, row=1, column=3 , sticky='e')
         boton_guardar= tk.Button(self.parent, text="guardar", command=funcion_guardar, width=10).grid(padx=10, pady=10, row=11, column=2,columnspan=2, sticky='w')
         boton_enviar= tk.Button(self.parent, text="Enviar!", command=funcion_enviar , width=10).grid(padx=10, pady=10, row=14, column=2,columnspan=2)
         
+        
+        
+        etiqueta_condicion_producto= tk.Label(self.parent, text="Condicion del producto:").grid(row=3, column=3,columnspan=2, sticky='w')
+        lista_condicion_producto = ttk.Combobox(
+            state="readonly",
+            values=["Buenas condiciones", "Malas condiciones"]
+        )
+        lista_condicion_producto.grid(row=4, column=3,columnspan=3, sticky='w')
+        lista_condicion_producto.set("Buenas condiciones")
 
-
-        etiqueta_listbox= Label(self.parent, text="Lista de productos").grid(row=12, column=2)
 
 
         
-
-        # Add a Treeview widget
+        etiqueta_tree= Label(self.parent, text="Lista de productos").grid(row=12, column=2)
         tree = ttk.Treeview(self.parent, column=("c1", "c2", "c3","c4","c5","c6","c7","c8"), show='headings', height=6)
         s = ttk.Style()
         s.theme_use('clam')
@@ -135,16 +142,18 @@ class UI(tk.Frame):
         tree.column("# 8", anchor=CENTER, minwidth=0, width=100, stretch=NO)
         tree.heading("# 8", text="Fecha")
 
-
-        # Insert the data in Treeview widget
-        
-
         tree.grid( pady=10 ,row=12, column=2,columnspan=2, sticky='w')
 
 
 if __name__ == "__main__":
+    def cerrar_ventana():
+        sys.exit()    
+        ROOT.destroy()
+
+
     ROOT = tk.Tk()
     ROOT.geometry("1000x600")
+    ROOT.protocol("WM_DELETE_WINDOW", cerrar_ventana)
     APP = UI([],parent=ROOT)
     APP.pack()
     APP.mainloop()

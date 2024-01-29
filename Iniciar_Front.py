@@ -2,13 +2,15 @@ from productos import Producto
 from Front import UI
 import tkinter as tk
 import sys
+from datetime import datetime
 
+dt = datetime.now()
 
 """lista de prueba"""
 
-producto1 = Producto("1", "A1", "USA", "10")
-producto2 = Producto("2", "B1", "Canada", "15")
-producto3 = Producto("3", "C1", "Mexico", "8")
+producto1 = Producto("1", "A1", "USA", "10","12","aperturado","Chile",dt)
+producto2 = Producto("2", "B1", "Canada", "15","12","aperturado","Chile",dt)
+producto3 = Producto("3", "C1", "Mexico", "8","12","aperturado","Chile",dt)
 
 lista_productos = [producto1,producto2,producto3]
 
