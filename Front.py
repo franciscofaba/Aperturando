@@ -37,15 +37,16 @@ class UI(tk.Frame):
         """ funciones."""
     
         def funcion_guardar():
-            primer_producto = self.lista_productos[0]
-            item=tree.insert('', 'end', text="1", values=(primer_producto.producto_id, primer_producto.contenedor_id, primer_producto.pais, primer_producto.peso, primer_producto.peso_preaviso, primer_producto.estado, primer_producto.pais_destino, primer_producto.fecha))
-            campo_de_texto_producto.delete(0,10)
-            campo_de_texto_receptaculo.delete(0,10)
-            campo_de_texto_pais.delete(0,10)
-            campo_de_texto_peso.delete(0,10)
-            self.lista_productos.pop(0)
-            
-            return(item)
+            if campo_de_texto_producto.get():
+                primer_producto = self.lista_productos[0]
+                item=tree.insert('', 'end', text="1", values=(primer_producto.producto_id, primer_producto.contenedor_id, primer_producto.pais, primer_producto.peso, primer_producto.peso_preaviso, primer_producto.estado, primer_producto.pais_destino, primer_producto.fecha))
+                campo_de_texto_producto.delete(0,10)
+                campo_de_texto_receptaculo.delete(0,10)
+                campo_de_texto_pais.delete(0,10)
+                campo_de_texto_peso.delete(0,10)
+                self.lista_productos.pop(0)
+                
+
         def funcion_insertar():
             if campo_de_texto_producto.get():
                 return
@@ -76,14 +77,15 @@ class UI(tk.Frame):
                 item_text = tree.item(item, "values")
                 column = tree.identify_column(event.x)
                 row = tree.identify_row(event.y)
+
             cn = int(str(column).replace('#', ''))
             rn = int(str(row).replace('I', ''))
-            entryedit = tk.Entry (self.parent, width=30)
-            entryedit.grid( row=18, column=2,columnspan=1, sticky="w")
+            entryedit = tk.Entry (self.parent, width=20)
+            entryedit.grid(padx=20, row=18, column=2,columnspan=1, sticky="w")
             
 
             def saveedit():
-                print(entryedit.get())
+                
                 if entryedit.get():
                     tree.set(item, column=column, value=entryedit.get())
                     entryedit.destroy()
@@ -109,6 +111,7 @@ class UI(tk.Frame):
             okb.grid( row=18, column=2,)
             salir_boton = tk.Button(self.parent, text='Salir de editar', width=10, command=salir)
             salir_boton.grid(row=18, column=1, columnspan=1,  sticky="e")
+            entryedit.insert(0,tree.item(tree.selection())['values'][cn-1])
 
 
         """ widgets."""
@@ -154,7 +157,7 @@ class UI(tk.Frame):
 
         boton_insert = tk.Button(self.parent, text="insertar", command=funcion_insertar,  width=15).grid(pady=20, row=1, column=3 , sticky='e')
         boton_guardar= tk.Button(self.parent, text="guardar", command=funcion_guardar, width=10).grid(padx=10, pady=10, row=11, column=2,columnspan=2, sticky='w')
-        boton_enviar= tk.Button(self.parent, text="Enviar!", command=funcion_enviar , width=10).grid(padx=10, pady=10, row=14, column=2,columnspan=2)
+        boton_enviar= tk.Button(self.parent, text="Enviar!", command=funcion_enviar , width=10).grid(pady=20, row=14, column=3 , sticky='e')
         boton_delete= tk.Button(self.parent, text="Borrar seleccion", command=delete , width=15).grid(padx=100, pady=10, row=14, column=1,columnspan=2, sticky='w')
         
 
@@ -168,6 +171,8 @@ class UI(tk.Frame):
         lista_destino_producto.set("MINL Normal")
 
 
+    
+
         etiqueta_condicion_producto= tk.Label(self.parent, text="Condicion del producto:").grid(row=5, column=3,columnspan=2, sticky='w')
         lista_condicion_producto = ttk.Combobox(
             state="readonly",
@@ -176,6 +181,14 @@ class UI(tk.Frame):
         )
         lista_condicion_producto.grid(row=6, column=3,columnspan=3, sticky='w')
         lista_condicion_producto.set("30 Envio Recibido en Buena Condicion")
+
+        
+        etiqueta_envio= tk.Label(self.parent, text="Tipo de Envio:").grid(row=7, column=3,columnspan=2, sticky='w')
+        etiqueta_envio_respuesta= tk.Label(self.parent, text="EMS",fg='#003').grid(padx=10,row=8, column=3,columnspan=2, sticky='w')
+
+        etiqueta_oficina= tk.Label(self.parent, text="Oficina:").grid(row=9, column=3,columnspan=2, sticky='w')
+        etiqueta_oficina_respuesta= tk.Label(self.parent, text="CLSCLD", fg='#003').grid(padx=10,row=10, column=3,columnspan=2, sticky='w')
+
 
 
         

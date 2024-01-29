@@ -20,7 +20,7 @@ class Producto:
 
 
 def construir_producto():
-    dt = datetime.now()
+    
 
     var_producto=input("ingresa producto:")
     var_contenedor=input("ingresa contenedor:")
@@ -29,6 +29,7 @@ def construir_producto():
     var_peso_preaviso=input("ingresa peso_preaviso:")
     var_estado=input("ingresa estado:")
     var_pais_destino=input("ingresa pais_destino")
+    dt = datetime.now()
     var_fecha=dt
 
 
