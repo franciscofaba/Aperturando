@@ -80,10 +80,9 @@ class UI(tk.Frame):
 
             cn = int(str(column).replace('#', ''))
             rn = int(str(row).replace('I', ''))
-            entryedit = tk.Entry (self.parent, width=20)
-            entryedit.grid(padx=20, row=18, column=2,columnspan=1, sticky="w")
+            entryedit = tk.Entry (self.parent, width=40)
+            entryedit.grid(padx=0, row=18, column=2, sticky=S+N+W)
             
-
             def saveedit():
                 
                 if entryedit.get():
@@ -105,10 +104,10 @@ class UI(tk.Frame):
 
 
             global etiqueta_edit
-            etiqueta_edit= Label(self.parent, text="Editar:",padx=0, pady=10,)
+            etiqueta_edit= Label(self.parent, text="Editar:",padx=0, pady=0)
             etiqueta_edit.grid(row=17, column=1)
             okb = ttk.Button(self.parent, text='OK', width=4, command=saveedit)
-            okb.grid( row=18, column=2,)
+            okb.grid( row=18, column=2)
             salir_boton = tk.Button(self.parent, text='Salir de editar', width=10, command=salir)
             salir_boton.grid(row=18, column=1, columnspan=1,  sticky="e")
             entryedit.insert(0,tree.item(tree.selection())['values'][cn-1])
@@ -158,7 +157,7 @@ class UI(tk.Frame):
         boton_insert = tk.Button(self.parent, text="insertar", command=funcion_insertar,  width=15).grid(pady=20, row=1, column=3 , sticky='e')
         boton_guardar= tk.Button(self.parent, text="guardar", command=funcion_guardar, width=10).grid(padx=10, pady=10, row=11, column=2,columnspan=2, sticky='w')
         boton_enviar= tk.Button(self.parent, text="Enviar!", command=funcion_enviar , width=10).grid(pady=20, row=14, column=3 , sticky='e')
-        boton_delete= tk.Button(self.parent, text="Borrar seleccion", command=delete , width=15).grid(padx=100, pady=10, row=14, column=1,columnspan=2, sticky='w')
+        boton_delete= tk.Button(self.parent, text="Borrar seleccion", command=delete , width=15).grid(padx=0, pady=10, row=14, column=2,columnspan=2, sticky='w')
         
 
         etiqueta_destino_producto= tk.Label(self.parent, text="Status:").grid(row=3, column=3,columnspan=2, sticky='w')
@@ -173,7 +172,7 @@ class UI(tk.Frame):
 
     
 
-        etiqueta_condicion_producto= tk.Label(self.parent, text="Condicion del producto:").grid(row=5, column=3,columnspan=2, sticky='w')
+        etiqueta_condicion_producto= tk.Label(self.parent, text="Condicion del producto:").grid(padx=0, pady=10,row=5, column=3,columnspan=2, sticky='w')
         lista_condicion_producto = ttk.Combobox(
             state="readonly",
             values=["30 Envio Recibido en Buena Condicion", "31 Envio Dañado o Roto", "32 Envio Violado"],
@@ -183,16 +182,16 @@ class UI(tk.Frame):
         lista_condicion_producto.set("30 Envio Recibido en Buena Condicion")
 
         
-        etiqueta_envio= tk.Label(self.parent, text="Tipo de Envio:").grid(row=7, column=3,columnspan=2, sticky='w')
+        etiqueta_envio= tk.Label(self.parent, text="Tipo de Envio:").grid(row=7, column=3, sticky='w')
         etiqueta_envio_respuesta= tk.Label(self.parent, text="EMS",fg='#003').grid(padx=10,row=8, column=3,columnspan=2, sticky='w')
 
-        etiqueta_oficina= tk.Label(self.parent, text="Oficina:").grid(row=9, column=3,columnspan=2, sticky='w')
-        etiqueta_oficina_respuesta= tk.Label(self.parent, text="CLSCLD", fg='#003').grid(padx=10,row=10, column=3,columnspan=2, sticky='w')
+        etiqueta_oficina= tk.Label(self.parent, text="Oficina:").grid(row=9, column=3, sticky="w")
+        etiqueta_oficina_respuesta= tk.Label(self.parent, text="CLSCLD", fg='#003').grid(padx=10,row=10, column=3, sticky='w')
 
 
 
         
-        etiqueta_tree= Label(self.parent, text="Lista de productos").grid(row=12, column=2)
+        etiqueta_tree= Label(self.parent, text="Lista de productos").grid(row=11, column=2)
         tree = ttk.Treeview(self.parent, column=("c1", "c2", "c3","c4","c5","c6","c7","c8"), show='headings', height=6)
         s = ttk.Style()
         s.theme_use('clam')
@@ -241,7 +240,7 @@ if __name__ == "__main__":
     ROOT.geometry("1000x600")
     ROOT.protocol("WM_DELETE_WINDOW", cerrar_ventana)
     APP = UI(lista_productos,parent=ROOT)
-    APP.pack()
+
     APP.mainloop()
     ROOT.destroy()
 
