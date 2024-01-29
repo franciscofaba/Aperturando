@@ -5,6 +5,8 @@ from tkinter import *
 from productos import construir_producto
 from tkinter import ttk
 import sys
+from datetime import datetime
+from productos import Producto
 
 class UI(tk.Frame):
 
@@ -14,7 +16,7 @@ class UI(tk.Frame):
         self.init_ui()
         self.lista_productos = lista_productos
         self.actualizar_lista_periodicamente()
-
+    
         
         
 
@@ -36,14 +38,14 @@ class UI(tk.Frame):
     
         def funcion_guardar():
             primer_producto = self.lista_productos[0]
-            tree.insert('', 'end', text="1", values=(primer_producto.producto_id, primer_producto.contenedor_id, primer_producto.pais, primer_producto.peso, primer_producto.peso_preaviso, primer_producto.estado, primer_producto.pais_destino, primer_producto.fecha))
+            item=tree.insert('', 'end', text="1", values=(primer_producto.producto_id, primer_producto.contenedor_id, primer_producto.pais, primer_producto.peso, primer_producto.peso_preaviso, primer_producto.estado, primer_producto.pais_destino, primer_producto.fecha))
             campo_de_texto_producto.delete(0,10)
             campo_de_texto_receptaculo.delete(0,10)
             campo_de_texto_pais.delete(0,10)
             campo_de_texto_peso.delete(0,10)
             self.lista_productos.pop(0)
             
-            return
+            return(item)
         def funcion_insertar():
             if campo_de_texto_producto.get():
                 return
@@ -59,19 +61,62 @@ class UI(tk.Frame):
                     print("Error: no hay nada en la lista")
 
 
-
         def funcion_enviar():
             tree.delete(*tree.get_children())
 
             return
 
-        
-        
+        def delete():
+            # Get selected item to Delete
+            selected_item = tree.selection()[0]
+            tree.delete(selected_item)
+
+        def set_cell_value(event):
+            for item in tree.selection():
+                item_text = tree.item(item, "values")
+                column = tree.identify_column(event.x)
+                row = tree.identify_row(event.y)
+            cn = int(str(column).replace('#', ''))
+            rn = int(str(row).replace('I', ''))
+            entryedit = tk.Entry (self.parent, width=30)
+            entryedit.grid( row=18, column=2,columnspan=1, sticky="w")
+            
+
+            def saveedit():
+                print(entryedit.get())
+                if entryedit.get():
+                    tree.set(item, column=column, value=entryedit.get())
+                    entryedit.destroy()
+                    okb.destroy()
+                    salir_boton.destroy()
+                    etiqueta_edit.destroy()
+                else:
+                    entryedit.destroy()
+                    okb.destroy()
+                    salir_boton.destroy()
+                    etiqueta_edit.destroy()
+            def salir():
+                entryedit.destroy()
+                okb.destroy()
+                salir_boton.destroy()
+                etiqueta_edit.destroy()
+
+
+            global etiqueta_edit
+            etiqueta_edit= Label(self.parent, text="Editar:",padx=0, pady=10,)
+            etiqueta_edit.grid(row=17, column=1)
+            okb = ttk.Button(self.parent, text='OK', width=4, command=saveedit)
+            okb.grid( row=18, column=2,)
+            salir_boton = tk.Button(self.parent, text='Salir de editar', width=10, command=salir)
+            salir_boton.grid(row=18, column=1, columnspan=1,  sticky="e")
+
+
         """ widgets."""
 
         self.parent.title("Aperturacion")
         etiqueta_titulo= tk.Label(self.parent, text="Aperturacion", underline=8 ,padx=20, pady=10,)
         etiqueta_titulo.grid(row=1, column=1)
+        
 
 
         etiqueta_producto= tk.Label(self.parent, text="Codigo de Envio: ")
@@ -110,8 +155,9 @@ class UI(tk.Frame):
         boton_insert = tk.Button(self.parent, text="insertar", command=funcion_insertar,  width=15).grid(pady=20, row=1, column=3 , sticky='e')
         boton_guardar= tk.Button(self.parent, text="guardar", command=funcion_guardar, width=10).grid(padx=10, pady=10, row=11, column=2,columnspan=2, sticky='w')
         boton_enviar= tk.Button(self.parent, text="Enviar!", command=funcion_enviar , width=10).grid(padx=10, pady=10, row=14, column=2,columnspan=2)
+        boton_delete= tk.Button(self.parent, text="Borrar seleccion", command=delete , width=15).grid(padx=100, pady=10, row=14, column=1,columnspan=2, sticky='w')
         
-        
+
         etiqueta_destino_producto= tk.Label(self.parent, text="Status:").grid(row=3, column=3,columnspan=2, sticky='w')
         lista_destino_producto = ttk.Combobox(
             state="readonly",
@@ -157,17 +203,31 @@ class UI(tk.Frame):
 
         tree.grid( pady=10 ,row=12, column=2,columnspan=2, sticky='w')
 
+        tree.bind('<Double-1>', set_cell_value)
+        
 
 if __name__ == "__main__":
+
+
+
+    dt = datetime.now()
+    producto1 = Producto("1", "A1", "USA", "10","12","aperturado","Chile",dt)
+    producto2 = Producto("2", "B1", "Canada", "15","12","aperturado","Chile",dt)
+    producto3 = Producto("3", "C1", "Mexico", "8","12","aperturado","Chile",dt)
+
+    lista_productos = [producto1,producto2,producto3]
+
+
+
+
     def cerrar_ventana():
         sys.exit()    
         ROOT.destroy()
 
-    lista=[]
     ROOT = tk.Tk()
     ROOT.geometry("1000x600")
     ROOT.protocol("WM_DELETE_WINDOW", cerrar_ventana)
-    APP = UI(lista,parent=ROOT)
+    APP = UI(lista_productos,parent=ROOT)
     APP.pack()
     APP.mainloop()
     ROOT.destroy()
