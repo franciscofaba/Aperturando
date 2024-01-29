@@ -80,8 +80,8 @@ class UI(tk.Frame):
 
             cn = int(str(column).replace('#', ''))
             rn = int(str(row).replace('I', ''))
-            entryedit = tk.Entry (self.parent, width=40)
-            entryedit.grid(padx=0, row=18, column=2, sticky=S+N+W)
+            entryedit = tk.Entry (self.parent, width=30)
+            entryedit.grid(padx=0, row=18, column=2, columnspan=2, sticky=S+N+W)
             
             def saveedit():
                 
@@ -172,7 +172,7 @@ class UI(tk.Frame):
 
     
 
-        etiqueta_condicion_producto= tk.Label(self.parent, text="Condicion del producto:").grid(padx=0, pady=10,row=5, column=3,columnspan=2, sticky='w')
+        etiqueta_condicion_producto= tk.Label(self.parent, text="Condicion del producto:").grid(row=5, column=3,columnspan=2, sticky='w')
         lista_condicion_producto = ttk.Combobox(
             state="readonly",
             values=["30 Envio Recibido en Buena Condicion", "31 Envio Dañado o Roto", "32 Envio Violado"],
@@ -190,8 +190,10 @@ class UI(tk.Frame):
 
 
 
+        """not tocar es estructural"""
+        etiqueta_tree= Label(self.parent, text="Lista de productos").grid(row=12, column=2)
+        "__________"
         
-        etiqueta_tree= Label(self.parent, text="Lista de productos").grid(row=11, column=2)
         tree = ttk.Treeview(self.parent, column=("c1", "c2", "c3","c4","c5","c6","c7","c8"), show='headings', height=6)
         s = ttk.Style()
         s.theme_use('clam')
