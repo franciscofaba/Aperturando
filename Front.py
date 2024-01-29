@@ -16,7 +16,6 @@ class UI(tk.Frame):
         self.init_ui()
         self.lista_productos = lista_productos
         self.actualizar_lista_periodicamente()
-    
         
         
 
@@ -36,7 +35,7 @@ class UI(tk.Frame):
 
         """ funciones."""
     
-        def funcion_guardar():
+        def funcion_guardar(event=None):
             if campo_de_texto_producto.get():
                 primer_producto = self.lista_productos[0]
                 item=tree.insert('', 'end', text="1", values=(primer_producto.producto_id, primer_producto.contenedor_id, primer_producto.pais, primer_producto.peso, primer_producto.peso_preaviso, primer_producto.estado, primer_producto.pais_destino, primer_producto.fecha))
@@ -47,7 +46,7 @@ class UI(tk.Frame):
                 self.lista_productos.pop(0)
                 
 
-        def funcion_insertar():
+        def funcion_insertar(event=None):
             if campo_de_texto_producto.get():
                 return
 
@@ -62,17 +61,16 @@ class UI(tk.Frame):
                     print("Error: no hay nada en la lista")
 
 
-        def funcion_enviar():
+        def funcion_enviar(event=None): #esta funcion se supone que envia los productos pero solo los borra realmente
             tree.delete(*tree.get_children())
 
             return
 
-        def delete():
-            # Get selected item to Delete
+        def delete(event=None): #funcion para borrar solamente un producto
             selected_item = tree.selection()[0]
             tree.delete(selected_item)
 
-        def set_cell_value(event):
+        def set_cell_value(event): #funcion para editar productos
             for item in tree.selection():
                 item_text = tree.item(item, "values")
                 column = tree.identify_column(event.x)
@@ -83,7 +81,7 @@ class UI(tk.Frame):
             entryedit = tk.Entry (self.parent, width=30)
             entryedit.grid(padx=0, row=18, column=2, columnspan=2, sticky=S+N+W)
             
-            def saveedit():
+            def saveedit(): #funcion para guardar producto editado
                 
                 if entryedit.get():
                     tree.set(item, column=column, value=entryedit.get())
@@ -96,7 +94,7 @@ class UI(tk.Frame):
                     okb.destroy()
                     salir_boton.destroy()
                     etiqueta_edit.destroy()
-            def salir():
+            def salir(): #funcion para salir de la edicion
                 entryedit.destroy()
                 okb.destroy()
                 salir_boton.destroy()
@@ -153,6 +151,7 @@ class UI(tk.Frame):
         
         
         
+        """botones"""
 
         boton_insert = tk.Button(self.parent, text="insertar", command=funcion_insertar,  width=15).grid(pady=20, row=1, column=3 , sticky='e')
         boton_guardar= tk.Button(self.parent, text="guardar", command=funcion_guardar, width=10).grid(padx=10, pady=10, row=11, column=2,columnspan=2, sticky='w')
@@ -160,6 +159,12 @@ class UI(tk.Frame):
         boton_delete= tk.Button(self.parent, text="Borrar seleccion", command=delete , width=15).grid(padx=0, pady=10, row=14, column=2,columnspan=2, sticky='w')
         
 
+        """Bind de teclas"""
+        self.parent.bind("<Left>",funcion_insertar)
+        self.parent.bind("<Right>",funcion_guardar)
+        self.parent.bind("<Up>",funcion_enviar)
+        
+        """listas desplegables"""
         etiqueta_destino_producto= tk.Label(self.parent, text="Status:").grid(row=3, column=3,columnspan=2, sticky='w')
         lista_destino_producto = ttk.Combobox(
             state="readonly",
@@ -168,9 +173,6 @@ class UI(tk.Frame):
         )
         lista_destino_producto.grid(row=4, column=3,columnspan=3, sticky='w')
         lista_destino_producto.set("MINL Normal")
-
-
-    
 
         etiqueta_condicion_producto= tk.Label(self.parent, text="Condicion del producto:").grid(row=5, column=3,columnspan=2, sticky='w')
         lista_condicion_producto = ttk.Combobox(
@@ -181,6 +183,9 @@ class UI(tk.Frame):
         lista_condicion_producto.grid(row=6, column=3,columnspan=3, sticky='w')
         lista_condicion_producto.set("30 Envio Recibido en Buena Condicion")
 
+
+
+        """etiquetas"""
         
         etiqueta_envio= tk.Label(self.parent, text="Tipo de Envio:").grid(row=7, column=3, sticky='w')
         etiqueta_envio_respuesta= tk.Label(self.parent, text="EMS",fg='#003').grid(padx=10,row=8, column=3,columnspan=2, sticky='w')
@@ -193,7 +198,11 @@ class UI(tk.Frame):
         """not tocar es estructural"""
         etiqueta_tree= Label(self.parent, text="Lista de productos").grid(row=12, column=2)
         "__________"
-        
+
+
+
+        """triewview (cuadrado donde se depliegan los productos)"""
+
         tree = ttk.Treeview(self.parent, column=("c1", "c2", "c3","c4","c5","c6","c7","c8"), show='headings', height=6)
         s = ttk.Style()
         s.theme_use('clam')
@@ -218,7 +227,16 @@ class UI(tk.Frame):
         tree.grid( pady=10 ,row=12, column=2,columnspan=2, sticky='w')
 
         tree.bind('<Double-1>', set_cell_value)
+        vsb = ttk.Scrollbar(self.parent, orient="vertical", command=tree.yview)
+        vsb.place(x=915, y=290, height=149)
+        tree.configure(yscrollcommand=vsb.set)
         
+
+        
+
+
+
+
 
 if __name__ == "__main__":
 
@@ -228,8 +246,23 @@ if __name__ == "__main__":
     producto1 = Producto("1", "A1", "USA", "10","12","aperturado","Chile",dt)
     producto2 = Producto("2", "B1", "Canada", "15","12","aperturado","Chile",dt)
     producto3 = Producto("3", "C1", "Mexico", "8","12","aperturado","Chile",dt)
+    producto4 = Producto("4", "D1", "Alemania", "20", "12", "aperturado", "Chile", dt)
+    producto5 = Producto("5", "E1", "España", "12", "12", "aperturado", "Chile", dt)
+    producto6 = Producto("6", "F1", "Francia", "18", "12", "aperturado", "Chile", dt)
+    producto7 = Producto("7", "G1", "Italia", "14", "12", "aperturado", "Chile", dt)
+    producto8 = Producto("8", "H1", "Japón", "16", "12", "aperturado", "Chile", dt)
+    producto9 = Producto("9", "I1", "Corea del Sur", "9", "12", "aperturado", "Chile", dt)
+    producto10 = Producto("10", "J1", "Australia", "22", "12", "aperturado", "Chile", dt)
+    producto11 = Producto("11", "K1", "Brasil", "11", "12", "aperturado", "Chile", dt)
+    producto12 = Producto("12", "L1", "Argentina", "17", "12", "aperturado", "Chile", dt)
+    producto13 = Producto("13", "M1", "Inglaterra", "13", "12", "aperturado", "Chile", dt)
+    producto14 = Producto("14", "N1", "Portugal", "19", "12", "aperturado", "Chile", dt)
+    producto15 = Producto("15", "O1", "Suecia", "10", "12", "aperturado", "Chile", dt)
+    producto16 = Producto("16", "P1", "Suiza", "15", "12", "aperturado", "Chile", dt)
+    producto17 = Producto("17", "Q1", "Noruega", "8", "12", "aperturado", "Chile", dt)
+    producto18 = Producto("18", "R1", "Dinamarca", "21", "12", "aperturado", "Chile", dt)
 
-    lista_productos = [producto1,producto2,producto3]
+    lista_productos = [producto1, producto2, producto3, producto4, producto5, producto6, producto7, producto8, producto9, producto10, producto11, producto12, producto13, producto14, producto15, producto16, producto17, producto18]
 
 
 
