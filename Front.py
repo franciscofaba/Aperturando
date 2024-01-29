@@ -112,15 +112,24 @@ class UI(tk.Frame):
         boton_enviar= tk.Button(self.parent, text="Enviar!", command=funcion_enviar , width=10).grid(padx=10, pady=10, row=14, column=2,columnspan=2)
         
         
-        
-        etiqueta_condicion_producto= tk.Label(self.parent, text="Condicion del producto:").grid(row=3, column=3,columnspan=2, sticky='w')
+        etiqueta_destino_producto= tk.Label(self.parent, text="Status:").grid(row=3, column=3,columnspan=2, sticky='w')
+        lista_destino_producto = ttk.Combobox(
+            state="readonly",
+            values=["MINL Normal", "MIMS Mal encaminado", "MIAT En Transito", "MIRD Retornado/Reencaminado en Transito", "MIRT Retornado"],
+            width=50
+        )
+        lista_destino_producto.grid(row=4, column=3,columnspan=3, sticky='w')
+        lista_destino_producto.set("MINL Normal")
+
+
+        etiqueta_condicion_producto= tk.Label(self.parent, text="Condicion del producto:").grid(row=5, column=3,columnspan=2, sticky='w')
         lista_condicion_producto = ttk.Combobox(
             state="readonly",
-            values=["Buenas condiciones", "Malas condiciones"]
+            values=["30 Envio Recibido en Buena Condicion", "31 Envio Dañado o Roto", "32 Envio Violado"],
+            width=50
         )
-        lista_condicion_producto.grid(row=4, column=3,columnspan=3, sticky='w')
-        lista_condicion_producto.set("Buenas condiciones")
-
+        lista_condicion_producto.grid(row=6, column=3,columnspan=3, sticky='w')
+        lista_condicion_producto.set("30 Envio Recibido en Buena Condicion")
 
 
         
