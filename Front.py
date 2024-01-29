@@ -1,8 +1,9 @@
 
+from turtle import width
 from six.moves import tkinter as tk
 from tkinter import *
 from productos import construir_producto
-
+from tkinter import ttk
 
 
 class UI(tk.Frame):
@@ -13,6 +14,7 @@ class UI(tk.Frame):
         self.init_ui()
         self.lista_productos = lista_productos
         self.actualizar_lista_periodicamente()
+
         
         
 
@@ -34,8 +36,7 @@ class UI(tk.Frame):
     
         def funcion_guardar():
             primer_producto = self.lista_productos[0]
-            texto= f'  ID Producto: {primer_producto.producto_id}  |  ID Envase: {primer_producto.contenedor_id}  |  País: {primer_producto.pais}  |  Peso: {primer_producto.peso}'
-            listbox.insert(0,texto )
+            tree.insert('', 'end', text="1", values=(primer_producto.producto_id, primer_producto.contenedor_id, primer_producto.pais, primer_producto.peso))
             campo_de_texto_producto.delete(0,10)
             campo_de_texto_receptaculo.delete(0,10)
             campo_de_texto_pais.delete(0,10)
@@ -56,7 +57,7 @@ class UI(tk.Frame):
 
 
         def funcion_enviar():
-            listbox.delete(0,10)
+            tree.delete(0,10)
 
             return
 
@@ -108,15 +109,42 @@ class UI(tk.Frame):
 
 
         etiqueta_listbox= Label(self.parent, text="Lista de productos").grid(row=12, column=2)
-        listbox = Listbox(self.parent, width=70)
-        listbox.grid( pady=10 ,row=12, column=2,columnspan=2, sticky='w')
+
+
         
 
+        # Add a Treeview widget
+        tree = ttk.Treeview(self.parent, column=("c1", "c2", "c3","c4","c5","c6","c7","c8"), show='headings', height=6)
+        s = ttk.Style()
+        s.theme_use('clam')
+
+        tree.column("# 1", anchor=CENTER, minwidth=0, width=100, stretch=NO)
+        tree.heading("# 1", text="ID producto")
+        tree.column("# 2", anchor=CENTER, minwidth=0, width=100, stretch=NO)
+        tree.heading("# 2", text="Codigo de Envio")
+        tree.column("# 3", anchor=CENTER, minwidth=0, width=100, stretch=NO)
+        tree.heading("# 3", text="Pais de Origen")
+        tree.column("# 4", anchor=CENTER, minwidth=0, width=100, stretch=NO)
+        tree.heading("# 4", text="Peso (kg.)")
+        tree.column("# 5", anchor=CENTER, minwidth=0, width=100, stretch=NO)
+        tree.heading("# 5", text="Peso con Preaviso (kg.)")
+        tree.column("# 6", anchor=CENTER, minwidth=0, width=100, stretch=NO)
+        tree.heading("# 6", text="Estado")
+        tree.column("# 7", anchor=CENTER, minwidth=0, width=100, stretch=NO)
+        tree.heading("# 7", text="Pais de Destino")
+        tree.column("# 8", anchor=CENTER, minwidth=0, width=100, stretch=NO)
+        tree.heading("# 8", text="Fecha")
+
+
+        # Insert the data in Treeview widget
+        
+
+        tree.grid( pady=10 ,row=12, column=2,columnspan=2, sticky='w')
 
 
 if __name__ == "__main__":
     ROOT = tk.Tk()
-    ROOT.geometry("600x500")
+    ROOT.geometry("1000x600")
     APP = UI([],parent=ROOT)
     APP.pack()
     APP.mainloop()

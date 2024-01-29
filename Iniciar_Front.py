@@ -1,7 +1,6 @@
 from productos import Producto
 from Front import UI
 import tkinter as tk
-from tkinter import messagebox
 import sys
 
 
@@ -24,9 +23,11 @@ def cerrar_ventana():
 
 
 ROOT = tk.Tk()
-ROOT.geometry("700x500")
+ROOT.geometry("1000x600")
 ROOT.protocol("WM_DELETE_WINDOW", cerrar_ventana)
 app = UI(lista_productos, parent=ROOT)
+
+
 ROOT.mainloop() 
 
 
