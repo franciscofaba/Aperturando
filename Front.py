@@ -39,10 +39,10 @@ class UI(tk.Frame):
             if campo_de_texto_producto.get():
                 primer_producto = self.lista_productos[0]
                 item=tree.insert('', 'end', text="1", values=(primer_producto.producto_id, primer_producto.contenedor_id, primer_producto.pais, primer_producto.peso, primer_producto.peso_preaviso, primer_producto.estado, primer_producto.pais_destino, primer_producto.fecha))
-                campo_de_texto_producto.delete(0,10)
-                campo_de_texto_receptaculo.delete(0,10)
-                campo_de_texto_pais.delete(0,10)
-                campo_de_texto_peso.delete(0,10)
+                campo_de_texto_producto.delete(0,100)
+                campo_de_texto_receptaculo.delete(0,100)
+                campo_de_texto_pais.delete(0,100)
+                campo_de_texto_peso.delete(0,100)
                 self.lista_productos.pop(0)
                 
 
@@ -79,7 +79,7 @@ class UI(tk.Frame):
             cn = int(str(column).replace('#', ''))
             rn = int(str(row).replace('I', ''))
             entryedit = tk.Entry (self.parent, width=30)
-            entryedit.grid(padx=0, row=18, column=2, columnspan=2, sticky=S+N+W)
+            entryedit.grid(pady=10, row=19, column=3, columnspan=2, sticky=S+N+W)
             
             def saveedit(): #funcion para guardar producto editado
                 
@@ -88,26 +88,23 @@ class UI(tk.Frame):
                     entryedit.destroy()
                     okb.destroy()
                     salir_boton.destroy()
-                    etiqueta_edit.destroy()
                 else:
                     entryedit.destroy()
                     okb.destroy()
                     salir_boton.destroy()
-                    etiqueta_edit.destroy()
+
             def salir(): #funcion para salir de la edicion
                 entryedit.destroy()
                 okb.destroy()
                 salir_boton.destroy()
-                etiqueta_edit.destroy()
 
 
-            global etiqueta_edit
-            etiqueta_edit= Label(self.parent, text="Editar:",padx=0, pady=0)
-            etiqueta_edit.grid(row=17, column=1)
+
+            
             okb = ttk.Button(self.parent, text='OK', width=4, command=saveedit)
-            okb.grid( row=18, column=2)
+            okb.grid(pady=10, row=19, column=3, sticky="e")
             salir_boton = tk.Button(self.parent, text='Salir de editar', width=10, command=salir)
-            salir_boton.grid(row=18, column=1, columnspan=1,  sticky="e")
+            salir_boton.grid(pady=10,row=19, column=2, columnspan=1,  sticky="w")
             entryedit.insert(0,tree.item(tree.selection())['values'][cn-1])
 
 
@@ -209,29 +206,32 @@ class UI(tk.Frame):
 
         tree.column("# 1", anchor=CENTER, minwidth=0, width=100, stretch=NO)
         tree.heading("# 1", text="ID producto")
-        tree.column("# 2", anchor=CENTER, minwidth=0, width=100, stretch=NO)
+        tree.column("# 2", anchor=CENTER, minwidth=0, width=160, stretch=TRUE)
         tree.heading("# 2", text="Codigo de Envio")
-        tree.column("# 3", anchor=CENTER, minwidth=0, width=100, stretch=NO)
+        tree.column("# 3", anchor=CENTER, minwidth=0, width=0, stretch=NO)
         tree.heading("# 3", text="Pais de Origen")
-        tree.column("# 4", anchor=CENTER, minwidth=0, width=100, stretch=NO)
+        tree.column("# 4", anchor=CENTER, minwidth=0, width=70, stretch=NO)
         tree.heading("# 4", text="Peso (kg.)")
-        tree.column("# 5", anchor=CENTER, minwidth=0, width=100, stretch=NO)
+        tree.column("# 5", anchor=CENTER, minwidth=0, width=90, stretch=YES)
         tree.heading("# 5", text="Peso con Preaviso (kg.)")
-        tree.column("# 6", anchor=CENTER, minwidth=0, width=100, stretch=NO)
+        tree.column("# 6", anchor=CENTER, minwidth=0, width=90, stretch=NO)
         tree.heading("# 6", text="Estado")
-        tree.column("# 7", anchor=CENTER, minwidth=0, width=100, stretch=NO)
+        tree.column("# 7", anchor=CENTER, minwidth=0, width=90, stretch=NO)
         tree.heading("# 7", text="Pais de Destino")
-        tree.column("# 8", anchor=CENTER, minwidth=0, width=100, stretch=NO)
+        tree.column("# 8", anchor=CENTER, minwidth=0, width=90, stretch=NO)
         tree.heading("# 8", text="Fecha")
 
         tree.grid( pady=10 ,row=12, column=2,columnspan=2, sticky='w')
 
         tree.bind('<Double-1>', set_cell_value)
         vsb = ttk.Scrollbar(self.parent, orient="vertical", command=tree.yview)
-        vsb.place(x=915, y=290, height=149)
+        vsb.place(x=805, y=290, height=149)
         tree.configure(yscrollcommand=vsb.set)
         
 
+        etiqueta_edit= Label(self.parent, text="Consejo:  para editar, seleccione el elemento que desea cambiar y haga doble clic en él.",padx=0, pady=0)
+        etiqueta_edit.grid(row=17, column=2, columnspan=3)
+        etiqueta_edit.config(fg="grey")
         
 
 
@@ -243,26 +243,37 @@ if __name__ == "__main__":
 
 
     dt = datetime.now()
-    producto1 = Producto("1", "A1", "USA", "10","12","aperturado","Chile",dt)
-    producto2 = Producto("2", "B1", "Canada", "15","12","aperturado","Chile",dt)
-    producto3 = Producto("3", "C1", "Mexico", "8","12","aperturado","Chile",dt)
-    producto4 = Producto("4", "D1", "Alemania", "20", "12", "aperturado", "Chile", dt)
-    producto5 = Producto("5", "E1", "España", "12", "12", "aperturado", "Chile", dt)
-    producto6 = Producto("6", "F1", "Francia", "18", "12", "aperturado", "Chile", dt)
-    producto7 = Producto("7", "G1", "Italia", "14", "12", "aperturado", "Chile", dt)
-    producto8 = Producto("8", "H1", "Japón", "16", "12", "aperturado", "Chile", dt)
-    producto9 = Producto("9", "I1", "Corea del Sur", "9", "12", "aperturado", "Chile", dt)
-    producto10 = Producto("10", "J1", "Australia", "22", "12", "aperturado", "Chile", dt)
-    producto11 = Producto("11", "K1", "Brasil", "11", "12", "aperturado", "Chile", dt)
-    producto12 = Producto("12", "L1", "Argentina", "17", "12", "aperturado", "Chile", dt)
-    producto13 = Producto("13", "M1", "Inglaterra", "13", "12", "aperturado", "Chile", dt)
-    producto14 = Producto("14", "N1", "Portugal", "19", "12", "aperturado", "Chile", dt)
-    producto15 = Producto("15", "O1", "Suecia", "10", "12", "aperturado", "Chile", dt)
-    producto16 = Producto("16", "P1", "Suiza", "15", "12", "aperturado", "Chile", dt)
-    producto17 = Producto("17", "Q1", "Noruega", "8", "12", "aperturado", "Chile", dt)
-    producto18 = Producto("18", "R1", "Dinamarca", "21", "12", "aperturado", "Chile", dt)
+    producto1 = Producto("CH199487439US", "USJFKACLSCLEACN30467007900083", "US (United States of America (the))", "10","12","aperturado","CL (Chile)",dt)
+    producto2 = Producto("CH198402940US", "USLAXACLSCLEACN30593005900046", "US (United States of America (the))", "15","12","aperturado","Cl (Chile)",dt)
+    producto3 = Producto("CH198884460US", "USLAXACLSCLEACN30626002900063", "US (United States of America (the))", "8","12","aperturado","CL (Chile)",dt)
+    producto4 = Producto("CP435601315DE", "DEFRAACLSCLGBCN31094003000149", "DE (Germany)", "20", "12", "aperturado", "CL (Chile)", dt)
+    producto5 = Producto("CY138411900US", "USORDACLSCLEACN30546005900113", "US (United States of America (the))", "12", "12", "aperturado", "CL (Chile)", dt)
+    producto6 = Producto("CJ499175876US", "USLAXACLSCLEACN30593002900034", "US (United States of America (the))", "18", "12", "aperturado", "CL (Chile)", dt)
+    producto7 = Producto("CH198767327US", "USLAXACLSCLEACN30626003900101", "US (United States of America (the))", "14", "12", "aperturado", "CL (Chile)", dt)
+    producto8 = Producto("CS235292097DE", "DEFRAACLSCLGBCN31113005000023", "DE (Germany)", "16", "12", "aperturado", "CL (Chile)", dt)
+    producto9 = Producto("CC021361557ES", "ESMADCCLSCLGBCN30346012010150", "ES (Spain)", "9", "12", "aperturado", "CL (Chile)", dt)
+    producto21 = Producto("FR123456789FR", "FRPARACLSCLEACN30467007900083", "FR (France)", "10", "12", "aperturado", "CL (Chile)", dt)
+    producto22 = Producto("AU987654321AU", "AUSYDACLSMELACN30593005900046", "AU (Australia)", "15", "12", "aperturado", "CL (Chile)", dt)
+    producto23 = Producto("IT456789012IT", "ITROMACLSCLEACN30626002900063", "IT (Italy)", "8", "12", "aperturado", "CL (Chile)", dt)
+    producto24 = Producto("JP654321987JP", "JPTKOAACLSTKOACN31094003000149", "JP (Japan)", "20", "12", "aperturado", "CL (Chile)", dt)
+    producto25 = Producto("UK321987654UK", "UKLONACLSCLEACN30546005900113", "UK (United Kingdom)", "12", "12", "aperturado", "CL (Chile)", dt)
+    producto26 = Producto("BR789012345BR", "BRGRUAACLSGRUACN30593002900034", "BR (Brazil)", "18", "12", "aperturado", "CL (Chile)", dt)
+    producto27 = Producto("MX987654321MX", "MXMEXACLSCLEACN30626003900101", "MX (Mexico)", "14", "12", "aperturado", "CL (Chile)", dt)
+    producto28 = Producto("CA123456789CA", "CATORACLSCLEACN31113005000023", "CA (Canada)", "16", "12", "aperturado", "CL (Chile)", dt)
+    producto29 = Producto("RU789012345RU", "RUMOSACLSCLEACN30346012010150", "RU (Russia)", "9", "12", "aperturado", "CL (Chile)", dt)
+    producto30 = Producto("IN987654321IN", "INBOMACLSCLEACN30467003900112", "IN (India)", "22", "12", "aperturado", "CL (Chile)", dt)
+    producto31 = Producto("SA789012345SA", "SARUHACLSCLEACN30563005000095", "SA (Saudi Arabia)", "24", "12", "aperturado", "CL (Chile)", dt)
+    producto32 = Producto("KR987654321KR", "KRSELACLSCLEACN30546002900155", "KR (South Korea)", "26", "12", "aperturado", "CL (Chile)", dt)
+    producto33 = Producto("AR789012345AR", "ARBUEACLSCLEACN30593003900036", "AR (Argentina)", "28", "12", "aperturado", "CL (Chile)", dt)
+    producto34 = Producto("EG987654321EG", "EGCAIAACLSLXN30546001010123", "EG (Egypt)", "30", "12", "aperturado", "CL (Chile)", dt)
+    producto35 = Producto("NG789012345NG", "NGLOSAACLSCLEACN31094003000011", "NG (Nigeria)", "32", "12", "aperturado", "CL (Chile)", dt)
+    producto36 = Producto("ZA987654321ZA", "ZACPTACLSCLEACN30467001900173", "ZA (South Africa)", "34", "12", "aperturado", "CL (Chile)", dt)
+    producto37 = Producto("ID789012345ID", "IDJKTACLSCLEACN30626002900122", "ID (Indonesia)", "36", "12", "aperturado", "CL (Chile)", dt)
+    producto38 = Producto("TH987654321TH", "THBKKACLSCLEACN30563005000136", "TH (Thailand)", "38", "12", "aperturado", "CL (Chile)", dt)
+    producto39 = Producto("PH789012345PH", "PHMNLACLSCLEACN30546005900164", "PH (Philippines)", "40", "12", "aperturado", "CL (Chile)", dt)
+    producto40 = Producto("MY987654321MY", "MYKULACLSCLEACN30346012010011", "MY (Malaysia)", "42", "12", "aperturado", "CL (Chile)", dt)
 
-    lista_productos = [producto1, producto2, producto3, producto4, producto5, producto6, producto7, producto8, producto9, producto10, producto11, producto12, producto13, producto14, producto15, producto16, producto17, producto18]
+    lista_productos = [producto1, producto2, producto3, producto4, producto5, producto6, producto7, producto8, producto9,producto21,producto22,producto23,producto24,producto25,producto26,producto27,producto28,producto29,producto30,producto31,producto32,producto33,producto34,producto35,producto36,producto37,producto38,producto39,producto40]
 
 
 
@@ -272,7 +283,7 @@ if __name__ == "__main__":
         ROOT.destroy()
 
     ROOT = tk.Tk()
-    ROOT.geometry("1000x600")
+    ROOT.geometry("900x600")
     ROOT.protocol("WM_DELETE_WINDOW", cerrar_ventana)
     APP = UI(lista_productos,parent=ROOT)
 
