@@ -78,8 +78,8 @@ class UI(tk.Frame):
 
             cn = int(str(column).replace('#', ''))
             rn = int(str(row).replace('I', ''))
-            entryedit = tk.Entry (self.parent, width=30)
-            entryedit.grid(pady=10, row=19, column=3, columnspan=2, sticky=S+N+W)
+            entryedit = tk.Entry (self.parent, width=50)
+            entryedit.grid(pady=30, row=19, column=3, columnspan=2, sticky=S+N+W)
             
             def saveedit(): #funcion para guardar producto editado
                 
@@ -102,9 +102,9 @@ class UI(tk.Frame):
 
             
             okb = ttk.Button(self.parent, text='OK', width=4, command=saveedit)
-            okb.grid(pady=10, row=19, column=3, sticky="e")
+            okb.grid(pady=30, row=19, column=3, sticky="e")
             salir_boton = tk.Button(self.parent, text='Salir de editar', width=10, command=salir)
-            salir_boton.grid(pady=10,row=19, column=2, columnspan=1,  sticky="w")
+            salir_boton.grid(pady=30,row=19, column=2, columnspan=1,  sticky="w")
             entryedit.insert(0,tree.item(tree.selection())['values'][cn-1])
 
 
@@ -232,10 +232,15 @@ class UI(tk.Frame):
         etiqueta_edit= Label(self.parent, text="Consejo:  para editar, seleccione el elemento que desea cambiar y haga doble clic en él.",padx=0, pady=0)
         etiqueta_edit.grid(row=17, column=2, columnspan=3)
         etiqueta_edit.config(fg="grey")
+
+
+        Usuario = "Usuario.apellido/(Normal)"
+        Grupo = 'CORREOINTERNO/'
+        fecha_usuario=datetime.now()
+
+        sbar = Label(self.parent, text='CLSCL              |              '+str(Grupo)+"NOT-860195-055              |              "+str(Grupo)+str(Usuario)+"              |              "+str(fecha_usuario),relief=SUNKEN, anchor="w")
+        sbar.place(x=0, y=630, height=20, width=950)
         
-
-
-
 
 
 if __name__ == "__main__":
@@ -283,8 +288,9 @@ if __name__ == "__main__":
         ROOT.destroy()
 
     ROOT = tk.Tk()
-    ROOT.geometry("900x600")
+    ROOT.geometry("950x650")
     ROOT.protocol("WM_DELETE_WINDOW", cerrar_ventana)
+    ROOT.resizable(0,0)
     APP = UI(lista_productos,parent=ROOT)
 
     APP.mainloop()
