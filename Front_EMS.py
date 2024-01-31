@@ -1,12 +1,14 @@
-
 from turtle import width
 from six.moves import tkinter as tk
 from tkinter import *
 from productos import construir_producto
 from tkinter import ttk
-import sys
 from datetime import datetime
+import sys
+from pathlib import Path
 from productos import Producto
+
+
 
 class UI(tk.Frame):
 
@@ -164,6 +166,7 @@ class UI(tk.Frame):
         """listas desplegables"""
         etiqueta_destino_producto= tk.Label(self.parent, text="Status:").grid(row=3, column=3,columnspan=2, sticky='w')
         lista_destino_producto = ttk.Combobox(
+            self.parent,
             state="readonly",
             values=["MINL Normal", "MIMS Mal encaminado", "MIAT En Transito", "MIRD Retornado/Reencaminado en Transito", "MIRT Retornado"],
             width=50
@@ -173,6 +176,7 @@ class UI(tk.Frame):
 
         etiqueta_condicion_producto= tk.Label(self.parent, text="Condicion del producto:").grid(row=5, column=3,columnspan=2, sticky='w')
         lista_condicion_producto = ttk.Combobox(
+            self.parent,
             state="readonly",
             values=["30 Envio Recibido en Buena Condicion", "31 Envio Dañado o Roto", "32 Envio Violado"],
             width=50
@@ -204,6 +208,7 @@ class UI(tk.Frame):
         s = ttk.Style()
         s.theme_use('clam')
 
+        
         tree.column("# 1", anchor=CENTER, minwidth=0, width=100, stretch=NO)
         tree.heading("# 1", text="ID producto")
         tree.column("# 2", anchor=CENTER, minwidth=0, width=160, stretch=TRUE)
@@ -242,58 +247,55 @@ class UI(tk.Frame):
         sbar.place(x=0, y=630, height=20, width=950)
         
 
+def iniciar_ventana():
+        dt = datetime.now()
+        producto1 = Producto("CH199487439US", "USJFKACLSCLEACN30467007900083", "US (United States of America (the))", "10","12","aperturado","CL (Chile)",dt)
+        producto2 = Producto("CH198402940US", "USLAXACLSCLEACN30593005900046", "US (United States of America (the))", "15","12","aperturado","Cl (Chile)",dt)
+        producto3 = Producto("CH198884460US", "USLAXACLSCLEACN30626002900063", "US (United States of America (the))", "8","12","aperturado","CL (Chile)",dt)
+        producto4 = Producto("CP435601315DE", "DEFRAACLSCLGBCN31094003000149", "DE (Germany)", "20", "12", "aperturado", "CL (Chile)", dt)
+        producto5 = Producto("CY138411900US", "USORDACLSCLEACN30546005900113", "US (United States of America (the))", "12", "12", "aperturado", "CL (Chile)", dt)
+        producto6 = Producto("CJ499175876US", "USLAXACLSCLEACN30593002900034", "US (United States of America (the))", "18", "12", "aperturado", "CL (Chile)", dt)
+        producto7 = Producto("CH198767327US", "USLAXACLSCLEACN30626003900101", "US (United States of America (the))", "14", "12", "aperturado", "CL (Chile)", dt)
+        producto8 = Producto("CS235292097DE", "DEFRAACLSCLGBCN31113005000023", "DE (Germany)", "16", "12", "aperturado", "CL (Chile)", dt)
+        producto9 = Producto("CC021361557ES", "ESMADCCLSCLGBCN30346012010150", "ES (Spain)", "9", "12", "aperturado", "CL (Chile)", dt)
+        producto21 = Producto("FR123456789FR", "FRPARACLSCLEACN30467007900083", "FR (France)", "10", "12", "aperturado", "CL (Chile)", dt)
+        producto22 = Producto("AU987654321AU", "AUSYDACLSMELACN30593005900046", "AU (Australia)", "15", "12", "aperturado", "CL (Chile)", dt)
+        producto23 = Producto("IT456789012IT", "ITROMACLSCLEACN30626002900063", "IT (Italy)", "8", "12", "aperturado", "CL (Chile)", dt)
+        producto24 = Producto("JP654321987JP", "JPTKOAACLSTKOACN31094003000149", "JP (Japan)", "20", "12", "aperturado", "CL (Chile)", dt)
+        producto25 = Producto("UK321987654UK", "UKLONACLSCLEACN30546005900113", "UK (United Kingdom)", "12", "12", "aperturado", "CL (Chile)", dt)
+        producto26 = Producto("BR789012345BR", "BRGRUAACLSGRUACN30593002900034", "BR (Brazil)", "18", "12", "aperturado", "CL (Chile)", dt)
+        producto27 = Producto("MX987654321MX", "MXMEXACLSCLEACN30626003900101", "MX (Mexico)", "14", "12", "aperturado", "CL (Chile)", dt)
+        producto28 = Producto("CA123456789CA", "CATORACLSCLEACN31113005000023", "CA (Canada)", "16", "12", "aperturado", "CL (Chile)", dt)
+        producto29 = Producto("RU789012345RU", "RUMOSACLSCLEACN30346012010150", "RU (Russia)", "9", "12", "aperturado", "CL (Chile)", dt)
+        producto30 = Producto("IN987654321IN", "INBOMACLSCLEACN30467003900112", "IN (India)", "22", "12", "aperturado", "CL (Chile)", dt)
+        producto31 = Producto("SA789012345SA", "SARUHACLSCLEACN30563005000095", "SA (Saudi Arabia)", "24", "12", "aperturado", "CL (Chile)", dt)
+        producto32 = Producto("KR987654321KR", "KRSELACLSCLEACN30546002900155", "KR (South Korea)", "26", "12", "aperturado", "CL (Chile)", dt)
+        producto33 = Producto("AR789012345AR", "ARBUEACLSCLEACN30593003900036", "AR (Argentina)", "28", "12", "aperturado", "CL (Chile)", dt)
+        producto34 = Producto("EG987654321EG", "EGCAIAACLSLXN30546001010123", "EG (Egypt)", "30", "12", "aperturado", "CL (Chile)", dt)
+        producto35 = Producto("NG789012345NG", "NGLOSAACLSCLEACN31094003000011", "NG (Nigeria)", "32", "12", "aperturado", "CL (Chile)", dt)
+        producto36 = Producto("ZA987654321ZA", "ZACPTACLSCLEACN30467001900173", "ZA (South Africa)", "34", "12", "aperturado", "CL (Chile)", dt)
+        producto37 = Producto("ID789012345ID", "IDJKTACLSCLEACN30626002900122", "ID (Indonesia)", "36", "12", "aperturado", "CL (Chile)", dt)
+        producto38 = Producto("TH987654321TH", "THBKKACLSCLEACN30563005000136", "TH (Thailand)", "38", "12", "aperturado", "CL (Chile)", dt)
+        producto39 = Producto("PH789012345PH", "PHMNLACLSCLEACN30546005900164", "PH (Philippines)", "40", "12", "aperturado", "CL (Chile)", dt)
+        producto40 = Producto("MY987654321MY", "MYKULACLSCLEACN30346012010011", "MY (Malaysia)", "42", "12", "aperturado", "CL (Chile)", dt)
 
-if __name__ == "__main__":
+        lista_productos = [producto1, producto2, producto3, producto4, producto5, producto6, producto7, producto8, producto9,producto21,producto22,producto23,producto24,producto25,producto26,producto27,producto28,producto29,producto30,producto31,producto32,producto33,producto34,producto35,producto36,producto37,producto38,producto39,producto40]
+        def cerrar_ventana():
+            sys.exit()    
+            ROOT.destroy()
 
+        ROOT = tk.Tk()
+        ROOT.geometry("950x650")
+        ROOT.protocol("WM_DELETE_WINDOW", cerrar_ventana)
+        ROOT.resizable(0,0)
+        APP = UI(lista_productos,parent=ROOT)
 
-
-    dt = datetime.now()
-    producto1 = Producto("CH199487439US", "USJFKACLSCLEACN30467007900083", "US (United States of America (the))", "10","12","aperturado","CL (Chile)",dt)
-    producto2 = Producto("CH198402940US", "USLAXACLSCLEACN30593005900046", "US (United States of America (the))", "15","12","aperturado","Cl (Chile)",dt)
-    producto3 = Producto("CH198884460US", "USLAXACLSCLEACN30626002900063", "US (United States of America (the))", "8","12","aperturado","CL (Chile)",dt)
-    producto4 = Producto("CP435601315DE", "DEFRAACLSCLGBCN31094003000149", "DE (Germany)", "20", "12", "aperturado", "CL (Chile)", dt)
-    producto5 = Producto("CY138411900US", "USORDACLSCLEACN30546005900113", "US (United States of America (the))", "12", "12", "aperturado", "CL (Chile)", dt)
-    producto6 = Producto("CJ499175876US", "USLAXACLSCLEACN30593002900034", "US (United States of America (the))", "18", "12", "aperturado", "CL (Chile)", dt)
-    producto7 = Producto("CH198767327US", "USLAXACLSCLEACN30626003900101", "US (United States of America (the))", "14", "12", "aperturado", "CL (Chile)", dt)
-    producto8 = Producto("CS235292097DE", "DEFRAACLSCLGBCN31113005000023", "DE (Germany)", "16", "12", "aperturado", "CL (Chile)", dt)
-    producto9 = Producto("CC021361557ES", "ESMADCCLSCLGBCN30346012010150", "ES (Spain)", "9", "12", "aperturado", "CL (Chile)", dt)
-    producto21 = Producto("FR123456789FR", "FRPARACLSCLEACN30467007900083", "FR (France)", "10", "12", "aperturado", "CL (Chile)", dt)
-    producto22 = Producto("AU987654321AU", "AUSYDACLSMELACN30593005900046", "AU (Australia)", "15", "12", "aperturado", "CL (Chile)", dt)
-    producto23 = Producto("IT456789012IT", "ITROMACLSCLEACN30626002900063", "IT (Italy)", "8", "12", "aperturado", "CL (Chile)", dt)
-    producto24 = Producto("JP654321987JP", "JPTKOAACLSTKOACN31094003000149", "JP (Japan)", "20", "12", "aperturado", "CL (Chile)", dt)
-    producto25 = Producto("UK321987654UK", "UKLONACLSCLEACN30546005900113", "UK (United Kingdom)", "12", "12", "aperturado", "CL (Chile)", dt)
-    producto26 = Producto("BR789012345BR", "BRGRUAACLSGRUACN30593002900034", "BR (Brazil)", "18", "12", "aperturado", "CL (Chile)", dt)
-    producto27 = Producto("MX987654321MX", "MXMEXACLSCLEACN30626003900101", "MX (Mexico)", "14", "12", "aperturado", "CL (Chile)", dt)
-    producto28 = Producto("CA123456789CA", "CATORACLSCLEACN31113005000023", "CA (Canada)", "16", "12", "aperturado", "CL (Chile)", dt)
-    producto29 = Producto("RU789012345RU", "RUMOSACLSCLEACN30346012010150", "RU (Russia)", "9", "12", "aperturado", "CL (Chile)", dt)
-    producto30 = Producto("IN987654321IN", "INBOMACLSCLEACN30467003900112", "IN (India)", "22", "12", "aperturado", "CL (Chile)", dt)
-    producto31 = Producto("SA789012345SA", "SARUHACLSCLEACN30563005000095", "SA (Saudi Arabia)", "24", "12", "aperturado", "CL (Chile)", dt)
-    producto32 = Producto("KR987654321KR", "KRSELACLSCLEACN30546002900155", "KR (South Korea)", "26", "12", "aperturado", "CL (Chile)", dt)
-    producto33 = Producto("AR789012345AR", "ARBUEACLSCLEACN30593003900036", "AR (Argentina)", "28", "12", "aperturado", "CL (Chile)", dt)
-    producto34 = Producto("EG987654321EG", "EGCAIAACLSLXN30546001010123", "EG (Egypt)", "30", "12", "aperturado", "CL (Chile)", dt)
-    producto35 = Producto("NG789012345NG", "NGLOSAACLSCLEACN31094003000011", "NG (Nigeria)", "32", "12", "aperturado", "CL (Chile)", dt)
-    producto36 = Producto("ZA987654321ZA", "ZACPTACLSCLEACN30467001900173", "ZA (South Africa)", "34", "12", "aperturado", "CL (Chile)", dt)
-    producto37 = Producto("ID789012345ID", "IDJKTACLSCLEACN30626002900122", "ID (Indonesia)", "36", "12", "aperturado", "CL (Chile)", dt)
-    producto38 = Producto("TH987654321TH", "THBKKACLSCLEACN30563005000136", "TH (Thailand)", "38", "12", "aperturado", "CL (Chile)", dt)
-    producto39 = Producto("PH789012345PH", "PHMNLACLSCLEACN30546005900164", "PH (Philippines)", "40", "12", "aperturado", "CL (Chile)", dt)
-    producto40 = Producto("MY987654321MY", "MYKULACLSCLEACN30346012010011", "MY (Malaysia)", "42", "12", "aperturado", "CL (Chile)", dt)
-
-    lista_productos = [producto1, producto2, producto3, producto4, producto5, producto6, producto7, producto8, producto9,producto21,producto22,producto23,producto24,producto25,producto26,producto27,producto28,producto29,producto30,producto31,producto32,producto33,producto34,producto35,producto36,producto37,producto38,producto39,producto40]
-
-
-
-
-    def cerrar_ventana():
-        sys.exit()    
+        APP.mainloop()
         ROOT.destroy()
 
-    ROOT = tk.Tk()
-    ROOT.geometry("950x650")
-    ROOT.protocol("WM_DELETE_WINDOW", cerrar_ventana)
-    ROOT.resizable(0,0)
-    APP = UI(lista_productos,parent=ROOT)
-
-    APP.mainloop()
-    ROOT.destroy()
 
 
+    
+if __name__ == "__main__":
+    iniciar_ventana()
+        
