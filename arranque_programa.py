@@ -26,8 +26,6 @@ def main():
             abrir_hub_cp()
 
 
-
-
 # ____ Iniciar la ventana: 
 
 

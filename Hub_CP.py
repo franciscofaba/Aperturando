@@ -12,12 +12,12 @@ def hub_cp(root2):
 # ____Funciones: 
 
     def abrir_front():
-        root_cp.destroy()
+        root2.destroy()
         iniciar_ventana_cp()
         
     def salir():
         sys.exit() 
-        root_cp.destroy()
+        root2.destroy()
 
     def volver():
         style.theme_use("vista")
@@ -115,7 +115,7 @@ def hub_cp(root2):
 
     def on_select(event):
         selected_item = treeview.selection()
-        if 'item_recibe' in selected_item:
+        if 'item1' in selected_item:
             tk.Frame.boton_abrir.config(state=tk.NORMAL)
         else:
             tk.Frame.boton_abrir.config(state=tk.DISABLED)

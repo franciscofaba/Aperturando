@@ -32,7 +32,7 @@ class UI(tk.Frame):
         def funcion_guardar(event=None):          
             if campo_de_texto_producto.get():
                 primer_producto = self.lista_productos[0]
-                item=tree.insert('', 'end', text="1", values=(primer_producto.producto_id, primer_producto.contenedor_id, primer_producto.pais, primer_producto.peso, primer_producto.peso_preaviso, primer_producto.estado, primer_producto.pais_destino, primer_producto.fecha))
+                item=tree.insert('', 'end', text="1", values=(primer_producto.envio, primer_producto.envase, primer_producto.paisOrigen, primer_producto.pesoEspecificado, primer_producto.pesoPreaviso, primer_producto.estadoActual, primer_producto.paisDestino, primer_producto.ultimaModificacion))
                 campo_de_texto_producto.delete(0,100)
                 campo_de_texto_receptaculo.delete(0,100)
                 campo_de_texto_pais.delete(0,100)
@@ -112,9 +112,9 @@ class UI(tk.Frame):
                 return
             else:
                 nuevo_producto = construir_producto(id)
-                campo_de_texto_receptaculo.insert(0,nuevo_producto.contenedor_id)
-                campo_de_texto_pais.insert(0,nuevo_producto.pais)
-                campo_de_texto_peso.insert(0,nuevo_producto.peso)
+                campo_de_texto_receptaculo.insert(0,nuevo_producto.envase)
+                campo_de_texto_pais.insert(0,nuevo_producto.paisOrigen)
+                campo_de_texto_peso.insert(0,nuevo_producto.pesoEspecificado)
                 self.lista_productos.append(nuevo_producto)
                 return
             

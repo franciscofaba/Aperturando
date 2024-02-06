@@ -13,12 +13,12 @@ def hub(root2):
 
 
     def abrir_front():
-        root.destroy()
+        root2.destroy()
         iniciar_ventana()
         
     def salir():
         sys.exit() 
-        root.destroy()
+        root2.destroy()
         
     def volver():
         style.theme_use("vista")

@@ -131,7 +131,11 @@ class UI(tk.Frame):
                 
 
 # WiDGET: ________________________________________________________________________
-
+        #seleccionar el estilo de la ventana
+        print("hola")
+        style = ttk.Style()
+        style.theme_use('clam')
+        print("chao")
 
     # titulo de la ventana
         self.parent.title("Aperturacion")
@@ -253,12 +257,7 @@ class UI(tk.Frame):
 
     # bind para hacer doble click en un producto y modificarlo
         tree.bind('<Double-1>', set_cell_value)
-    
-    
-    #seleccionar el estilo de la ventana
-        s = ttk.Style()
-        s.theme_use('clam')
-        
+            
         
     #abrir y posicionar el scrollbar del treeview
         vsb = ttk.Scrollbar(self.parent, orient="vertical", command=tree.yview)
@@ -311,9 +310,12 @@ def iniciar_ventana():
     ROOT_EMS.protocol("WM_DELETE_WINDOW", cerrar_ventana)
     ROOT_EMS.resizable(0,0)
 
+    
+    
     # abrir la ventana
     lista_productos = []
     APP = UI(lista_productos,parent=ROOT_EMS)
+    #seleccionar el estilo de la ventana
     APP.mainloop()
 
 
