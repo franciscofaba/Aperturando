@@ -1,39 +1,39 @@
 from sqlite3 import Timestamp
 from datetime import datetime
-
-
+from conexion_api import read_data
+import json
 
 class Producto:
-    def __init__(self, producto_id, contenedor_id, pais, peso, peso_preaviso, estado, pais_destino, fecha):
-        self.producto_id = producto_id
-        self.contenedor_id = contenedor_id
-        self.pais = pais
-        self.peso = peso
-        self.peso_preaviso = peso_preaviso
-        self.estado = estado
-        self.pais_destino = pais_destino
-        self.fecha = fecha
+    def __init__(self, envio, envase, paisOrigen, pesoEspecificado, pesoPreaviso, estadoActual, paisDestino, ultimaModificacion):
+        self.envio = envio
+        self.envase = envase
+        self.paisOrigen = paisOrigen
+        self.pesoEspecificado = pesoEspecificado
+        self.pesoPreaviso = pesoPreaviso
+        self.estadoActual = estadoActual
+        self.paisDestino = paisDestino
+        self.ultimaModificacion = ultimaModificacion
 
 
+def construir_producto(var_ID):
+
+    data = read_data(var_ID)
 
 
+    envio = data.get('envio')
+    pesoPreaviso = data.get('pesoPreaviso')
+    envase = data.get('envase')
+    claseEnvio = data.get('claseEnvio')
+    estadoActual = data.get('estadoActual')
+    ultimoAcontecimiento = data.get('ultimoAcontecimiento')
+    paisOrigen = data.get('paisOrigen')
+    paisDestino = data.get('paisDestino')
+    ultimaModificacion = data.get('ultimaModificacion')
+    identificadorLocal = data.get('identificadorLocal')
+    manifiesto = data.get('manifiesto')
+    pesoEspecificado = data.get('pesoEspecificado')
 
+    objeto = Producto(envio ,envase, paisOrigen, pesoPreaviso, pesoEspecificado,estadoActual, paisDestino, ultimaModificacion)
 
-def construir_producto():
-    dt = datetime.now()
-
-    var_producto=input("ingresa producto:")
-    var_contenedor=input("ingresa contenedor:")
-    var_pais=input("ingresa pais:")
-    var_peso=input("ingresa peso:")
-    var_peso_preaviso=input("ingresa peso_preaviso:")
-    var_estado=input("ingresa estado:")
-    var_pais_destino=input("ingresa pais_destino")
-    var_fecha=dt
-
-
-    objeto = Producto(var_producto,var_contenedor, var_pais, var_peso, var_peso_preaviso, var_estado, var_pais_destino, var_fecha)
     return(objeto)
-
-    
-
+  
