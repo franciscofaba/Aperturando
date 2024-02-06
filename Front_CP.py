@@ -102,8 +102,6 @@ class UI(tk.Frame):
     #esta funcion permite que al apretar Enter sobre el campo_de_texto_producto se llame a la api o se ejecute la funcion guardar dependiendo si ya se llamo o no a la api
         
         def on_enter(id): 
-    
-            print("Se presionó Enter")
             if campo_de_texto_pais.get():
                 funcion_guardar()
                 return
