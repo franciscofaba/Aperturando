@@ -1,5 +1,4 @@
-from sqlite3 import Timestamp
-from datetime import datetime
+
 from conexion_api import read_data
 import json
 

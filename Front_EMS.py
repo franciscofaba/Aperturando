@@ -1,12 +1,10 @@
-from turtle import width
 import tkinter as tk
 from tkinter import *
 from productos import construir_producto
 from tkinter import ttk
 from datetime import datetime
 import sys
-from pathlib import Path
-from productos import Producto
+
 
 
 
@@ -113,7 +111,7 @@ class UI(tk.Frame):
                 nuevo_producto = construir_producto(id)
                 campo_de_texto_receptaculo.insert(0,nuevo_producto.envase)
                 campo_de_texto_pais.insert(0,nuevo_producto.paisOrigen)
-                campo_de_texto_peso.insert(0,nuevo_producto.pesoPreaviso)
+                campo_de_texto_peso.insert(0,nuevo_producto.pesoEspecificado)
                 self.lista_productos.append(nuevo_producto)
                 return
             

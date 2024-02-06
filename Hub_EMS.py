@@ -1,29 +1,27 @@
-from importlib.resources import Package
-from tkinter.messagebox import YESNOCANCEL
-from turtle import tracer
 from Front_EMS import iniciar_ventana
 from tkinter import ttk
 import tkinter as tk
 from tkinter import *
 import sys
 
-def hub(root2):
+
+def hub_ems(firstROOT):
 
 # ____Funciones: 
 
 
     def abrir_front():
-        root2.destroy()
+        firstROOT.destroy()
         iniciar_ventana()
         
     def salir():
         sys.exit() 
-        root2.destroy()
+        firstROOT.destroy()
         
     def volver():
         style.theme_use("vista")
-        root2.deiconify() 
-        root.destroy()
+        firstROOT.deiconify() 
+        ems_HubROOT.destroy()
 
 
         
@@ -31,20 +29,20 @@ def hub(root2):
 
 
     # llamar ventana hija de la ventana de arranque
-    root = Toplevel()
+    ems_HubROOT = Toplevel()
     
     
     # datos para las dimesiones
     w = 500
     h = 540 
-    ws = root.winfo_screenwidth()
-    hs = root.winfo_screenheight()
+    ws = ems_HubROOT.winfo_screenwidth()
+    hs = ems_HubROOT.winfo_screenheight()
     x = (ws/2) - (w/2)
     y = (hs/2) - (h/2)
 
 
     # geometria de la ventana
-    root.geometry('%dx%d+%d+%d' % (w, h, x, y))
+    ems_HubROOT.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
 
 
@@ -60,7 +58,7 @@ def hub(root2):
     
     
     #definir las tabs de la ventana
-    tabControl = ttk.Notebook(root)
+    tabControl = ttk.Notebook(ems_HubROOT)
     tab1 = ttk.Frame(tabControl)
     tab2 = ttk.Frame(tabControl)
     
@@ -129,12 +127,12 @@ def hub(root2):
     tk.Frame.boton_salir.place(x=395,y=425 )
     tk.Frame.boton_ayuda = ttk.Button(tab1, text="Ayuda")
     tk.Frame.boton_ayuda.place(x=315,y=425)
-    tk.Frame.boton_atras = ttk.Button(root, text="Volver", command=volver)
+    tk.Frame.boton_atras = ttk.Button(ems_HubROOT, text="Volver", command=volver)
     tk.Frame.boton_atras.place(x=395,y=15)
     
     
 #  desplegar ventana .
-    root.mainloop()
+    ems_HubROOT.mainloop()
 
 if __name__ == "__main__":
-    hub()
+    hub_ems()

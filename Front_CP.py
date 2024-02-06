@@ -1,12 +1,9 @@
-from turtle import width
 import tkinter as tk
 from tkinter import *
 from productos import construir_producto
 from tkinter import ttk
 from datetime import datetime
 import sys
-from pathlib import Path
-from productos import Producto
 
 
 

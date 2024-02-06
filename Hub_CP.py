@@ -1,5 +1,3 @@
-from logging import root
-from turtle import tracer
 from Front_CP import iniciar_ventana_cp
 from tkinter import ttk
 import tkinter as tk
@@ -7,42 +5,42 @@ from tkinter import *
 import sys
 
 
-def hub_cp(root2):
+def hub_cp(firstROOT):
     
 # ____Funciones: 
 
     def abrir_front():
-        root2.destroy()
+        firstROOT.destroy()
         iniciar_ventana_cp()
         
     def salir():
         sys.exit() 
-        root2.destroy()
+        firstROOT.destroy()
 
     def volver():
         style.theme_use("vista")
-        root2.deiconify() 
-        root_cp.destroy()
+        firstROOT.deiconify() 
+        cp_HubROOT.destroy()
 
 
         
 # ____ Iniciar la ventana: 
 
     # llamar ventana hija de la ventana de arranque
-    root_cp = Toplevel()
+    cp_HubROOT = Toplevel()
     
     
     # datos para las dimesiones
     w = 500
     h = 540 
-    ws = root_cp.winfo_screenwidth()
-    hs = root_cp.winfo_screenheight()
+    ws = cp_HubROOT.winfo_screenwidth()
+    hs = cp_HubROOT.winfo_screenheight()
     x = (ws/2) - (w/2)
     y = (hs/2) - (h/2)
 
 
     # geometria de la ventana
-    root_cp.geometry('%dx%d+%d+%d' % (w, h, x, y))
+    cp_HubROOT.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
 
 
@@ -56,7 +54,7 @@ def hub_cp(root2):
 # ____ Manejo de viñetas:
     
     #definir las tabs de la ventana
-    tabControl = ttk.Notebook(root_cp)
+    tabControl = ttk.Notebook(cp_HubROOT)
     tab1 = ttk.Frame(tabControl)
     tab2 = ttk.Frame(tabControl)
     
@@ -126,7 +124,7 @@ def hub_cp(root2):
 
 # ____ widget: botones
 
-    tk.Frame.boton_atras = ttk.Button(root_cp, text="Volver", command=volver)
+    tk.Frame.boton_atras = ttk.Button(cp_HubROOT, text="Volver", command=volver)
     tk.Frame.boton_atras.place(x=395,y=15)
     tk.Frame.boton_abrir = ttk.Button(tab2, text="Ejecutar", command=abrir_front)
     tk.Frame.boton_abrir.grid(row=5,column=0,pady=5, ipadx=5)
@@ -138,13 +136,10 @@ def hub_cp(root2):
 
 
 #  desplegar ventana .
-    root_cp.mainloop()
+    cp_HubROOT.mainloop()
 
 
 
 if __name__ == "__main__":
 
-
-    root2="hola"
-
-    hub_cp(root2)
+    hub_cp()
