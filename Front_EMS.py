@@ -1,54 +1,118 @@
+from calendar import c
+from Front_Lotes import main_lotes
 import tkinter as tk
 from tkinter import *
-from productos import construir_producto
+from manifiesto import generate_manifest
+from productos import llamar_producto
 from tkinter import ttk
-from datetime import datetime
+import datetime
+from guardar import updt_prod_lot
 import sys
-
-
-
+from crud_envios import read_all_en_proceso, read_all_envios, read_envios, update_envios
+from tkinter import messagebox
+import openpyxl
+from manifiesto import generate_manifest
+from ttkthemes import ThemedTk
 
 
 class UI(tk.Frame):
-    def __init__(self, lista_productos, parent=None):
+    def __init__(self, root,lista_productos, parent=None):
         tk.Frame.__init__(self, parent)
         self.parent = parent
-        self.init_ui()
         self.lista_productos = lista_productos
+        self.init_ui(root)
+        
+        
 
 
-
-
-    def init_ui(self):
+    def init_ui(self, root):
         
     # Funciones: ____________________________________________________________
-    
+        def volver():
+            root.deiconify() 
+            self.parent.destroy()
     
     #esta funcion pasa los atributos desde los campos de texto al treeview
+        def abrir_lotes():
+            self.parent.withdraw()
+            main_lotes(self.parent)
     
         def funcion_guardar(event=None):          
             if campo_de_texto_producto.get():
+                
                 primer_producto = self.lista_productos[0]
-                item=tree.insert('', 'end', text="1", values=(primer_producto.envio, primer_producto.envase, primer_producto.paisOrigen, primer_producto.pesoEspecificado, primer_producto.pesoPreaviso, primer_producto.estadoActual, primer_producto.paisDestino, primer_producto.ultimaModificacion))
+                item=tree.insert('', 'end', text="1", values=(primer_producto.envio, primer_producto.envase, primer_producto.paisOrigen, primer_producto.pesoEspecificado, primer_producto.pesoPreaviso, primer_producto.estadoActual, primer_producto.paisDestino, primer_producto.ultimaModificacion, primer_producto.destino_cl))
                 campo_de_texto_producto.delete(0,100)
                 campo_de_texto_receptaculo.delete(0,100)
                 campo_de_texto_pais.delete(0,100)
                 campo_de_texto_peso.delete(0,100)
+                
+                
+                if primer_producto.destino_cl == 'santiago':
+                    tree.item(item, tags=('santiago',))
+                elif primer_producto.destino_cl == 'Santiago':
+                    tree.item(item, tags=('santiago',))
+                elif primer_producto.destino_cl== 'Carteroresto':
+                    tree.item(item, tags=('carteroresto',))
+                elif primer_producto.destino_cl== 'carteroresto':
+                    tree.item(item, tags=('carteroresto',))
+                    
+                id_envio = primer_producto.envio
+                json_en_proceso = {
+                    "en_proceso":"si"
+                }
+                update_envios(id_envio, json_en_proceso)
+                print(update_envios)
                 self.lista_productos.pop(0)
+                quitar_destino()
+
+        def quitar_destino():
+            global global_label
+            
+            
+            if global_label:
+                global_label.destroy()
+                global_label = None
+                        
+                
 
 
     #esta funcion se supone que envia los productos pero solo los borra realmente
     
-        def funcion_enviar(event=None): 
-            tree.delete(*tree.get_children())
-            return
+        def funcion_enviar(event=None):
+            
+            lista = [] 
+            for child in tree.get_children():
+                item=tree.item(child)["values"]
+                objeto = read_envios(item[0])
+                lista.append(objeto)
+                
+            estado_aduana = estado_var.get()
+            
+            if estado_aduana:
+                hora_actual = datetime.datetime.now()
+                id_lote = updt_prod_lot(lista,estado_aduana,hora_actual)
+                generate_manifest(id_lote,estado_aduana)
+                messagebox.showinfo(message="Apertura exitosa! (lote quedo en estado de espera para ser despachado)", title="APERTURA")
+                tree.delete(*tree.get_children())
+                return
+            else:
+                messagebox.showwarning(message="Seleccione Liberado o Retenido para continuar.", title="APERTURA/warning")
 
 
     #funcion para borrar solamente un producto
     
         def delete(event=None): 
             selected_item = tree.selection()[0]
+            enviodelete = tree.item(tree.selection())['values'][0] 
+            
             tree.delete(selected_item)
+            
+            datos = {
+                    "en_proceso": ""
+                    }
+                    
+            update = update_envios(enviodelete, datos)
 
 
     #funcion para editar productos
@@ -85,32 +149,56 @@ class UI(tk.Frame):
             
             #campo de texto donde se modificar el elemento
             entryedit = tk.Entry (self.parent, width=50)
-            entryedit.grid(pady=30, row=19, column=3, columnspan=2, sticky=S+N+W)
+            entryedit.place(x=417,y=233)
             
             #boton de ok para guardar el edit
             okb = ttk.Button(self.parent, text='OK', width=4, command=saveedit)
-            okb.grid(pady=30, row=19, column=3, sticky="e")
+            okb.configure(padding=(3, 0))
+            okb.place(x=723,y=232)
             
             #boton de salir para salir del modo edicion
-            salir_boton = tk.Button(self.parent, text='Salir de editar', width=10, command=salir)
-            salir_boton.grid(pady=30,row=19, column=2, columnspan=1,  sticky="w")
+            salir_boton = ttk.Button(self.parent, text='Salir de editar', command=salir)
+            salir_boton.configure(padding=(3, 0))
+            salir_boton.place(x=220,y=232)
             
             #se inserta el elemento que se quiere modificar en el campo de texto para que sea mas facil para el usuario 
             entryedit.insert(0,tree.item(tree.selection())['values'][cn-1])
             
             
-    #esta funcion permite que al apretar Enter sobre el campo_de_texto_producto se llame a la api o se ejecute la funcion guardar dependiendo si ya se llamo o no a la api
-        
+    
+        def display_destino():
+            global global_label
+            var_envio = self.lista_productos[0]
+            
+            if var_envio.destino_cl== 'santiago':
+                global_label = ttk.Label(self.parent, text="DESTINO:   SANTIAGO",background="green", font=("Arial", 30))
+                global_label.place(x=270,y=500)
+            elif var_envio.destino_cl== 'Santiago':
+                global_label = ttk.Label(self.parent, text="DESTINO:   SANTIAGO",background="green", font=("Arial", 30))
+                global_label.place(x=270,y=500)
+            elif var_envio.destino_cl== 'Carteroresto':
+                global_label = ttk.Label(self.parent, text="DESTINO:   REGIÓN",background="BLUE", font=("Arial", 30))
+                global_label.place(x=270,y=500)
+            elif var_envio.destino_cl== 'carteroresto':
+                global_label = ttk.Label(self.parent, text="DESTINO:   REGIÓN",background="BLUE", font=("Arial", 30))
+                global_label.place(x=270,y=500)
+    
+
+            
+            
+    #esta funcion permite que al apretar Enter sobre el campo_de_texto_producto se llame a la api o se ejecute la funcion guardar dependiendo si ya se llamo o no a la api  
         def on_enter(id): 
             if campo_de_texto_pais.get():
                 funcion_guardar()
                 return
             else:
-                nuevo_producto = construir_producto(id)
+                nuevo_producto = llamar_producto(id)
                 campo_de_texto_receptaculo.insert(0,nuevo_producto.envase)
                 campo_de_texto_pais.insert(0,nuevo_producto.paisOrigen)
                 campo_de_texto_peso.insert(0,nuevo_producto.pesoEspecificado)
                 self.lista_productos.append(nuevo_producto)
+                param="on_enter"
+                display_destino()
                 return
             
             
@@ -123,29 +211,76 @@ class UI(tk.Frame):
                 new_text = current_text[:max_chars]
                 campo_de_texto_producto.delete(0, tk.END)
                 campo_de_texto_producto.insert(0, new_text)
-
                 
+        def comprobar_guardado():
+            en_proceso = read_all_en_proceso()
+            if en_proceso:
+                respuesta_messagebox=(messagebox.askyesno(message="No se guardo correctamente la sesion anterior ¿Desea continuar?", title="ALERTA"))
+                print(respuesta_messagebox)
+                if respuesta_messagebox==True:
+                    for envio in en_proceso:
+                        insertar_recuperacion(envio)
+        
+                if respuesta_messagebox==False:
+                    
+                    datos = {
+                    "en_proceso": ""
+                    }
+                    
+                    for envio in en_proceso:
+                        id = envio.get("envio")
+                        update = update_envios(id, datos)
+                    
+                    
+        def insertar_recuperacion(objeto_envio):
+            item = tree.insert('', 'end', text="1", values=(
+            objeto_envio.get('envio'), 
+            objeto_envio.get('paisOrigen'), 
+            objeto_envio.get('pesoEspecificado'), 
+            objeto_envio.get('envase'), 
+            objeto_envio.get('pesoPreaviso'), 
+            objeto_envio.get('estadoActual'), 
+            objeto_envio.get('paisDestino'), 
+            objeto_envio.get('ultimaModificacion'),
+            objeto_envio.get('destino_cl')))
+            
+            if objeto_envio.get('destino_cl') == 'santiago':
+                tree.item(item, tags=('santiago',))
+            elif objeto_envio.get('destino_cl') == 'Santiago':
+                tree.item(item, tags=('santiago',))
+            elif objeto_envio.get('destino_cl')== 'Carteroresto':
+                tree.item(item, tags=('carteroresto',))
+            elif objeto_envio.get('destino_cl')== 'carteroresto':
+                tree.item(item, tags=('carteroresto',))
+            
 
 # WiDGET: ________________________________________________________________________
         #seleccionar el estilo de la ventana
+        
 
-        style = ttk.Style()
-        style.theme_use('clam')
+        # style = ttk.Style()
+        # style.theme_use('clam')
 
 
     # titulo de la ventana
         self.parent.title("Aperturacion")
         etiqueta_titulo= tk.Label(self.parent, text="Aperturacion", underline=8 ,padx=20, pady=10)
         etiqueta_titulo.grid(row=1, column=1)
-    
-
+        self.ems_logo = tk.PhotoImage(file="icons/Ems-Logo.png")
+        self.ems_logo = self.ems_logo.subsample(15)
+        button_imagen= tk.Button(self.parent, text="",image=self.ems_logo, height=20, relief="flat")
+        
+        button_imagen.place(x=5, y=0)
+        
     # primer campo de texto (Envio)
+        
         etiqueta_producto= tk.Label(self.parent, text="Codigo de Envio: ")
         etiqueta_producto.grid(row=3, column=2, columnspan=2, sticky='w')
         campo_de_texto_producto= tk.Entry(self.parent, width=50)
         campo_de_texto_producto.grid(row=4, column=2,columnspan=2, sticky='w')
         campo_de_texto_producto.bind("<KeyRelease>", limitar_longitud)
         try:
+            
             campo_de_texto_producto.bind("<Return>", lambda event: on_enter(campo_de_texto_producto.get()))
         except Exception as e:
             print("sigue...", e)
@@ -176,15 +311,28 @@ class UI(tk.Frame):
         
     # Botones 
         boton_guardar = tk.Button(self.parent, text="guardar", command=funcion_guardar, width=10).grid(padx=10, pady=10, row=11, column=2,columnspan=2, sticky='w')
-        boton_enviar = tk.Button(self.parent, text="Enviar!", command=funcion_enviar , width=10).grid(pady=20, row=14, column=3 , sticky='e')
+        boton_enviar = ttk.Button(self.parent, text="Enviar!", command=funcion_enviar , width=10).grid(pady=20, row=14, column=3 , sticky='e')
         boton_delete = tk.Button(self.parent, text="Borrar seleccion", command=delete , width=15).grid(padx=0, pady=10, row=14, column=2,columnspan=2, sticky='w')
-        
+        boton_lotes= tk.Button(self.parent, text="Lotes en espera", command=abrir_lotes, width= 18).place(x=740,y=580)
+        boton_lotes= tk.Button(self.parent, text="volver", command=volver, width= 12).place(x=800,y=10)
+    #radiobotones
+            
+        estado_var = tk.StringVar()
+        rb_liberado = ttk.Radiobutton(self.parent, text="Liberado", variable=estado_var, value="Liberado")
+        rb_liberado.place(x=490,y=10)
+        rb_retenido = ttk.Radiobutton(self.parent, text="Retenido", variable=estado_var, value="Retenido")
+        rb_retenido.place(x=570,y=10)
+    
 
+    
+    
+    
+    
     # bin de teclas
         self.parent.bind("<Right>",funcion_guardar)
         self.parent.bind("<Up>",funcion_enviar)
         
-        
+
     #Primera Lista desplegable (Estado del producto)
         etiqueta_destino_producto= tk.Label(self.parent, text="Status:").grid(row=3, column=3,columnspan=2, sticky='w')
         lista_destino_producto = ttk.Combobox(
@@ -212,12 +360,12 @@ class UI(tk.Frame):
 
     #Etiqueta con tipo de paquete    
         etiqueta_envio= tk.Label(self.parent, text="Tipo de Envio:").grid(row=7, column=3, sticky='w')
-        etiqueta_envio_respuesta= tk.Label(self.parent, text="EMS",fg='#003').grid(padx=10,row=8, column=3,columnspan=2, sticky='w')
+        etiqueta_envio_respuesta= tk.Label(self.parent, text="EMS",fg='#003').grid(padx=15,row=8, column=3,columnspan=2, sticky='w')
     
     
     #Etiqueta con tipo de oficina
         etiqueta_oficina= tk.Label(self.parent, text="Oficina:").grid(row=9, column=3, sticky="w")
-        etiqueta_oficina_respuesta= tk.Label(self.parent, text="CLSCLD", fg='#003').grid(padx=10,row=10, column=3, sticky='w')
+        etiqueta_oficina_respuesta= tk.Label(self.parent, text="CLSCLD", fg='#003').grid(padx=15,row=10, column=3, sticky='w')
 
 
     #Etiqueta que no se ve pero que sirve para la estructura
@@ -231,68 +379,121 @@ class UI(tk.Frame):
 # widget: TREEVIEW ______
         
     # abrir y posicionar el treeview
-        tree = ttk.Treeview(self.parent, column=("c1", "c2", "c3","c4","c5","c6","c7","c8"), show='headings', height=6)
+        tree = ttk.Treeview(self.parent, column=("c1", "c2", "c3","c4","c5","c6","c7","c8","c9"), show='headings', height=6)
         tree.column("# 1", anchor=CENTER, minwidth=0, width=100, stretch=NO)
         tree.heading("# 1", text="Envio")
-        tree.column("# 2", anchor=CENTER, minwidth=0, width=160, stretch=TRUE)
+        tree.column("# 2", anchor=CENTER, minwidth=0, width=100, stretch=TRUE)
         tree.heading("# 2", text="Envase")
         tree.column("# 3", anchor=CENTER, minwidth=0, width=0, stretch=NO)
         tree.heading("# 3", text="Pais de Origen")
         tree.column("# 4", anchor=CENTER, minwidth=0, width=70, stretch=NO)
-        tree.heading("# 4", text="Peso Real(kg.)")
+        tree.heading("# 4", text="Peso con Preaviso")
         tree.column("# 5", anchor=CENTER, minwidth=0, width=90, stretch=YES)
-        tree.heading("# 5", text="Peso con Preaviso (kg.)")
+        tree.heading("# 5", text="Peso")
         tree.column("# 6", anchor=CENTER, minwidth=0, width=90, stretch=NO)
         tree.heading("# 6", text="Estado Actual")
         tree.column("# 7", anchor=CENTER, minwidth=0, width=90, stretch=NO)
         tree.heading("# 7", text="Pais de Destino")
         tree.column("# 8", anchor=CENTER, minwidth=0, width=90, stretch=NO)
         tree.heading("# 8", text="Ultima Modificancion")
+        tree.column("# 9", anchor=CENTER, minwidth=0, width=90, stretch=NO)
+        tree.heading("# 9", text="dest. en Chile")
         tree.grid( pady=10 ,row=12, column=2,columnspan=2, sticky='w')
         
-
+        tree.bind("<<TreeviewSelect>>", display_destino)
     # bind para hacer doble click en un producto y modificarlo
         tree.bind('<Double-1>', set_cell_value)
             
         
     #abrir y posicionar el scrollbar del treeview
         vsb = ttk.Scrollbar(self.parent, orient="vertical", command=tree.yview)
-        vsb.place(x=805, y=263, height=149)
+        vsb.place(x=837, y=263, height=149)
         tree.configure(yscrollcommand=vsb.set)
+        
+        tree.tag_configure('santiago', background='green')
+        tree.tag_configure('carteroresto', background='blue')
         
  #widget: Footer : ______
 
     #etiqueta con las indicaciones para editar un item del treeview
         etiqueta_edit= Label(self.parent, text="Consejo:  para editar, seleccione el elemento que desea cambiar y haga doble clic en él.",padx=0, pady=0)
-        etiqueta_edit.grid(row=17, column=2, columnspan=3)
+        etiqueta_edit.place(x=220,y=210)
         etiqueta_edit.config(fg="grey")
 
     #datos del usuario que se colocaran en el futer
         Usuario = "Usuario.apellido/(Normal)"
         Grupo = 'CORREOINTERNO/'
-        fecha_usuario=datetime.now()
+        fecha_usuario=datetime.datetime.now()
 
     #etiqueta que hace de footer
         sbar = Label(self.parent, text='CLSCLD              |              '+str(Grupo)+"NOT-860195-055              |              "+str(Grupo)+str(Usuario)+"              |              "+str(fecha_usuario),relief=SUNKEN, anchor="w")
         sbar.place(x=0, y=630, height=20, width=950)
+    
+# variables globales: ________
 
-
+        global_label = None
+        comprobar_guardado()        
 #____________________________________________________________________#
 
+       
 
+
+
+
+
+
+        def fetch_codes_from_excel(file_path):
+            try:
+                # Cargar el archivo Excel
+                workbook = openpyxl.load_workbook(file_path)
+                # Seleccionar la hoja de trabajo
+                sheet = workbook.active
+                # Obtener los códigos de la columna A
+                codigos = [cell.value for cell in sheet['A'] if cell.value is not None]
+                return codigos
+            except Exception as e:
+                print("Error al leer el archivo Excel:", e)
+                return []
+            
+
+        
+        def simulate_enter(campo_de_texto_producto):
+            path='codigos_excel.xlsx'
+            
+            # Obtener los códigos del archivo Excel
+            codigos = fetch_codes_from_excel(path)
+            # Insertar el código en el campo de texto
+            for codigo in codigos:
+                campo_de_texto_producto.delete(0, tk.END)
+                campo_de_texto_producto.insert(0, str(codigo))
+                self.parent.update()
+                self.parent.after(1000)
+                
+                self.parent.event_generate('<Return>') 
+                self.parent.update()
+                self.parent.after(100)
+                self.parent.event_generate('<Return>')
+                self.parent.update()
+                self.parent.after(100)
+     
+        
+        self.parent.bind('o', lambda event: simulate_enter(campo_de_texto_producto))
+        
+        
+        
 
 
 
 #esta funcion permite iniciar la venta desde otros Scrypts.
 
-def iniciar_ventana():
+def iniciar_ventana(root):
+   
     def cerrar_ventana():
         sys.exit()    
         ROOT_EMS.destroy()
 
     # llamar ventana
-    ROOT_EMS = tk.Tk()
-    
+    ROOT_EMS = Toplevel()
     # datos para las dimesiones
     w = 950
     h = 650 
@@ -310,12 +511,14 @@ def iniciar_ventana():
     
     # abrir la ventana
     lista_productos = []
-    APP = UI(lista_productos,parent=ROOT_EMS)
+    APP = UI(root,lista_productos,parent=ROOT_EMS)
     #seleccionar el estilo de la ventana
     APP.mainloop()
 
 
     
 if __name__ == "__main__":
-    iniciar_ventana()
+    root = tk.Tk()
+    root.withdraw()
+    iniciar_ventana(root)
         

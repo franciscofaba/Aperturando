@@ -1,4 +1,5 @@
 from Front_EMS import iniciar_ventana
+from Front_Lotes import main_lotes
 from tkinter import ttk
 import tkinter as tk
 from tkinter import *
@@ -8,20 +9,26 @@ import sys
 def hub_ems(firstROOT):
 
 # ____Funciones: 
-
+    def cerrar_ventana():
+            sys.exit()    
+            ROOT_CP.destroy()
 
     def abrir_front():
-        firstROOT.destroy()
-        iniciar_ventana()
+        ems_HubROOT.withdraw()
+        iniciar_ventana(ems_HubROOT)
         
     def salir():
         sys.exit() 
         firstROOT.destroy()
         
     def volver():
-        style.theme_use("vista")
+        style.theme_use("clam")
         firstROOT.deiconify() 
         ems_HubROOT.destroy()
+        
+    def abrir_lotes():
+        ems_HubROOT.withdraw()
+        main_lotes(ems_HubROOT)
 
 
         
@@ -30,27 +37,28 @@ def hub_ems(firstROOT):
 
     # llamar ventana hija de la ventana de arranque
     ems_HubROOT = Toplevel()
-    
+    ems_HubROOT.title("Nuevo IPS")
     
     # datos para las dimesiones
     w = 500
-    h = 540 
+    h = 515 
     ws = ems_HubROOT.winfo_screenwidth()
     hs = ems_HubROOT.winfo_screenheight()
     x = (ws/2) - (w/2)
     y = (hs/2) - (h/2)
 
 
-    # geometria de la ventana
+    # geometria de la ventana y funciones
     ems_HubROOT.geometry('%dx%d+%d+%d' % (w, h, x, y))
-
+    ems_HubROOT.protocol("WM_DELETE_WINDOW", cerrar_ventana)
+    ems_HubROOT.resizable(0,0)
 
 
 # ____ Fijar estilo:
 
 
     style = ttk.Style()
-    style.theme_use("xpnative")
+    style.theme_use("clam")
 
 
 
@@ -65,7 +73,7 @@ def hub_ems(firstROOT):
     
     #abrir y modificar imagenes que van en las viñetas
     ems_logo = tk.PhotoImage(file="icons/Ems-Logo.png")
-    ems_logo = ems_logo.subsample(24)
+    ems_logo = ems_logo.subsample(26)
     packagelogo= tk.PhotoImage(file="icons/packages.png")
     packagelogo= packagelogo.subsample(16)
 
@@ -125,14 +133,16 @@ def hub_ems(firstROOT):
     tk.Frame.boton_abrir.grid(row=5,column=0,pady=5, ipadx=5)
     tk.Frame.boton_salir = ttk.Button(tab1, text="Salir", command=salir)
     tk.Frame.boton_salir.place(x=395,y=425 )
-    tk.Frame.boton_ayuda = ttk.Button(tab1, text="Ayuda")
-    tk.Frame.boton_ayuda.place(x=315,y=425)
-    tk.Frame.boton_atras = ttk.Button(ems_HubROOT, text="Volver", command=volver)
-    tk.Frame.boton_atras.place(x=395,y=15)
+    tk.Frame.boton_atras = ttk.Button(tab1, text="Volver", command=volver)
+    tk.Frame.boton_atras.place(x=315,y=425)
+    tk.Frame.boton_desp = ttk.Button(ems_HubROOT, text="Lotes en espera", command=abrir_lotes, width= 18)
+    tk.Frame.boton_desp.place(x=340,y=8)
     
     
 #  desplegar ventana .
     ems_HubROOT.mainloop()
 
 if __name__ == "__main__":
-    hub_ems()
+    root = tk.Tk()
+    root.withdraw()
+    hub_ems(root)

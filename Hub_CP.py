@@ -1,4 +1,5 @@
 from Front_CP import iniciar_ventana_cp
+from Front_Lotes import main_lotes
 from tkinter import ttk
 import tkinter as tk
 from tkinter import *
@@ -8,46 +9,54 @@ import sys
 def hub_cp(firstROOT):
     
 # ____Funciones: 
-
+    def cerrar_ventana():
+            sys.exit()    
+            ROOT_CP.destroy()
     def abrir_front():
-        firstROOT.destroy()
-        iniciar_ventana_cp()
+        cp_HubROOT.withdraw()
+        iniciar_ventana_cp(cp_HubROOT)
         
     def salir():
         sys.exit() 
         firstROOT.destroy()
 
     def volver():
-        style.theme_use("vista")
+        style.theme_use("clam")
         firstROOT.deiconify() 
         cp_HubROOT.destroy()
-
+        
+    def abrir_lotes():
+        cp_HubROOT.withdraw()
+        main_lotes(cp_HubROOT)
 
         
 # ____ Iniciar la ventana: 
 
     # llamar ventana hija de la ventana de arranque
     cp_HubROOT = Toplevel()
-    
+    cp_HubROOT.title("Nuevo IPS")
     
     # datos para las dimesiones
     w = 500
-    h = 540 
+    h = 513 
     ws = cp_HubROOT.winfo_screenwidth()
     hs = cp_HubROOT.winfo_screenheight()
     x = (ws/2) - (w/2)
     y = (hs/2) - (h/2)
 
 
-    # geometria de la ventana
+    # geometria de la ventana y funciones
     cp_HubROOT.geometry('%dx%d+%d+%d' % (w, h, x, y))
+    cp_HubROOT.protocol("WM_DELETE_WINDOW", cerrar_ventana)
+    cp_HubROOT.resizable(0,0)
+
 
 
 
 # ____ Fijar estilo:
 
     style = ttk.Style()
-    style.theme_use("xpnative")
+    style.theme_use("clam")
 
 
 
@@ -61,7 +70,7 @@ def hub_cp(firstROOT):
     
     #abrir y modificar imagenes que van en las viñetas
     ems_logo = tk.PhotoImage(file="icons/Ems-Logo.png")
-    ems_logo = ems_logo.subsample(24)
+    ems_logo = ems_logo.subsample(26)
     packagelogo= tk.PhotoImage(file="icons/packages.png")
     packagelogo= packagelogo.subsample(16)
 
@@ -124,13 +133,13 @@ def hub_cp(firstROOT):
 
 # ____ widget: botones
 
-    tk.Frame.boton_atras = ttk.Button(cp_HubROOT, text="Volver", command=volver)
-    tk.Frame.boton_atras.place(x=395,y=15)
+    tk.Frame.boton_atras = ttk.Button(cp_HubROOT, text="Lotes en espera", command=abrir_lotes, width= 18)
+    tk.Frame.boton_atras.place(x=340,y=8)
     tk.Frame.boton_abrir = ttk.Button(tab2, text="Ejecutar", command=abrir_front)
     tk.Frame.boton_abrir.grid(row=5,column=0,pady=5, ipadx=5)
     tk.Frame.boton_salir = ttk.Button(tab2, text="Salir", command=salir)
     tk.Frame.boton_salir.place(x=395,y=425 )
-    tk.Frame.boton_ayuda = ttk.Button(tab2, text="Ayuda")
+    tk.Frame.boton_ayuda = ttk.Button(tab2, text="Volver", command=volver)
     tk.Frame.boton_ayuda.place(x=315,y=425)
 
 
@@ -141,5 +150,6 @@ def hub_cp(firstROOT):
 
 
 if __name__ == "__main__":
-
-    hub_cp()
+    root = tk.Tk()
+    root.withdraw()
+    hub_cp(root)

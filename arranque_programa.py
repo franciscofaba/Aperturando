@@ -3,10 +3,14 @@ from Hub_EMS import hub_ems
 from tkinter import ttk
 from Hub_CP import hub_cp
 from tkinter import *
+import sys
 
 def main():
     
 # ____Funciones: 
+    def cerrar_ventana():
+                sys.exit()    
+                ROOT_CP.destroy()
 
 
     def abrir_hub_EMS():
@@ -25,13 +29,14 @@ def main():
         if oficina_seleccionada=="CLSCLE (SANTIAGO OCPI CP)":
             abrir_hub_cp()
 
+    
 
 # ____ Iniciar la ventana: 
 
 
     # llamar ventana
     firstROOT = tk.Tk()
-
+    firstROOT.title("Nuevo IPS")
     # datos para las dimesiones
     w = 370
     h = 200
@@ -41,9 +46,10 @@ def main():
     y = (hs/2) - (h/2)
 
 
-    # geometria de la ventana
+    # geometria de la ventana y funciones
     firstROOT.geometry('%dx%d+%d+%d' % (w, h, x, y))
-
+    firstROOT.protocol("WM_DELETE_WINDOW", cerrar_ventana)
+    firstROOT.resizable(0,0)
 
 
 #____ widgets: listas
@@ -102,13 +108,13 @@ def main():
 
     tk.Frame.boton_abrir = ttk.Button(firstROOT, text="aceptar", command=abrir, width=10)
     tk.Frame.boton_abrir.grid(padx=0,pady=20,row=5,column=1,sticky="w")
-
+    
 
 # widget: estilo ____
 
     style = ttk.Style()
-    style.theme_use("vista")
-    
+    style.theme_use("clam")
+    firstROOT
 # desplegar ventana .
     firstROOT.mainloop()
 
