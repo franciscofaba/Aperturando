@@ -289,7 +289,7 @@ class UI(tk.Frame):
         
         
     # cuarto campo de texto (Peso)
-        etiqueta_peso= ttk.Label(self.parent, text="Peso (Kg):")
+        etiqueta_peso= ttk.Label(self.parent, text="Peso:")
         etiqueta_peso.place(x=80,y=185)
         campo_de_texto_peso= ttk.Entry(self.parent, width=50, foreground="black")
         campo_de_texto_peso.place(x=80,y=205)

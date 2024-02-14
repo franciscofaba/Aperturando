@@ -13,7 +13,7 @@ from tkinter import messagebox
 import openpyxl
 from manifiesto import generate_manifest
 from ttkthemes import ThemedTk
-
+from balanza import leer_balanza
 
 
 class UI(tk.Frame):
@@ -196,9 +196,9 @@ class UI(tk.Frame):
                 nuevo_producto = llamar_producto(id)
                 campo_de_texto_receptaculo.insert(0,nuevo_producto.envase)
                 campo_de_texto_pais.insert(0,nuevo_producto.paisOrigen)
-                campo_de_texto_peso.insert(0,nuevo_producto.pesoEspecificado)
+                peso = leer_balanza()
+                campo_de_texto_peso.insert(0,peso)
                 self.lista_productos.append(nuevo_producto)
-                param="on_enter"
                 display_destino()
                 return
             
@@ -416,7 +416,7 @@ class UI(tk.Frame):
     #etiqueta con las indicaciones para editar un item del treeview
         style.configure("BW.TLabel", foreground="grey")
         
-        etiqueta_edit= ttk.Label(self.parent, text="Consejo:  para editar, seleccione el elemento que desea cambiar y haga doble clic en él.", style="BW.TLabel")
+        etiqueta_edit= ttk.Label(self.parent, text="Consejo:  para editar seleccione el elemento que desea cambiar y haga doble clic en él.", style="BW.TLabel")
         etiqueta_edit.place(x=425,y=235)
         
 
