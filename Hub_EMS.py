@@ -4,6 +4,7 @@ from tkinter import ttk
 import tkinter as tk
 from tkinter import *
 import sys
+from ttkthemes import ThemedTk
 
 
 def hub_ems(firstROOT):
@@ -22,7 +23,7 @@ def hub_ems(firstROOT):
         firstROOT.destroy()
         
     def volver():
-        style.theme_use("clam")
+
         firstROOT.deiconify() 
         ems_HubROOT.destroy()
         
@@ -40,8 +41,8 @@ def hub_ems(firstROOT):
     ems_HubROOT.title("Nuevo IPS")
     
     # datos para las dimesiones
-    w = 500
-    h = 515 
+    w = 520
+    h = 545 
     ws = ems_HubROOT.winfo_screenwidth()
     hs = ems_HubROOT.winfo_screenheight()
     x = (ws/2) - (w/2)
@@ -57,9 +58,6 @@ def hub_ems(firstROOT):
 # ____ Fijar estilo:
 
 
-    style = ttk.Style()
-    style.theme_use("clam")
-
 
 
 # ____ Manejo de viñetas:
@@ -72,8 +70,8 @@ def hub_ems(firstROOT):
     
     
     #abrir y modificar imagenes que van en las viñetas
-    ems_logo = tk.PhotoImage(file="icons/Ems-Logo.png")
-    ems_logo = ems_logo.subsample(26)
+    ems_logo = tk.PhotoImage(file="icons/Ems-Logo-old.png")
+    ems_logo = ems_logo.subsample(25)
     packagelogo= tk.PhotoImage(file="icons/packages.png")
     packagelogo= packagelogo.subsample(16)
 
@@ -91,7 +89,7 @@ def hub_ems(firstROOT):
     
     
     #fijar solamente una columna. esto permite modificar el ancho del treeview, dentro de la columna no hay nada realmente.
-    treeview.column("#0", anchor="w", minwidth=360, width=242, stretch=YES)
+    treeview.column("#0", anchor="w", minwidth=380, width=230, stretch=YES)
 
 
     #abrir y modificar iconos que se despliegan en el treeview
@@ -132,9 +130,9 @@ def hub_ems(firstROOT):
     tk.Frame.boton_abrir = ttk.Button(tab1, text="Ejecutar", command=abrir_front)
     tk.Frame.boton_abrir.grid(row=5,column=0,pady=5, ipadx=5)
     tk.Frame.boton_salir = ttk.Button(tab1, text="Salir", command=salir)
-    tk.Frame.boton_salir.place(x=395,y=425 )
+    tk.Frame.boton_salir.place(x=405,y=453 )
     tk.Frame.boton_atras = ttk.Button(tab1, text="Volver", command=volver)
-    tk.Frame.boton_atras.place(x=315,y=425)
+    tk.Frame.boton_atras.place(x=310,y=453)
     tk.Frame.boton_desp = ttk.Button(ems_HubROOT, text="Lotes en espera", command=abrir_lotes, width= 18)
     tk.Frame.boton_desp.place(x=340,y=8)
     
@@ -143,6 +141,10 @@ def hub_ems(firstROOT):
     ems_HubROOT.mainloop()
 
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = ThemedTk(theme='arc')
+    root.set_theme_advanced('arc', brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
+    style = ttk.Style()
+    style.configure('TButton', font=('American typewriter', 10), foreground='black')
+    style.configure('TLabel', font=('calibri', 10, 'bold'), foreground='black')
     root.withdraw()
     hub_ems(root)

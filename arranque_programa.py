@@ -4,6 +4,7 @@ from tkinter import ttk
 from Hub_CP import hub_cp
 from tkinter import *
 import sys
+from ttkthemes import ThemedTk
 
 def main():
     
@@ -35,11 +36,14 @@ def main():
 
 
     # llamar ventana
-    firstROOT = tk.Tk()
+    
+    firstROOT = ThemedTk(theme="arc")
+    firstROOT.set_theme_advanced("arc", brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
     firstROOT.title("Nuevo IPS")
+    style = ttk.Style()
     # datos para las dimesiones
     w = 370
-    h = 200
+    h = 225
     ws = firstROOT.winfo_screenwidth()
     hs = firstROOT.winfo_screenheight()
     x = (ws/2) - (w/2)
@@ -55,7 +59,7 @@ def main():
 #____ widgets: listas
 
     #primera lista
-    tk.Frame.etiqueta_origen= tk.Label (firstROOT, text="Origen de datos: ").grid(padx=10,pady=10,row=0,column=0, sticky="w")
+    tk.Frame.etiqueta_origen= ttk.Label (firstROOT, text="Origen de datos: ").grid(padx=10,pady=10,row=0,column=0, sticky="w")
     lista_origen = ttk.Combobox(
             firstROOT,
             state="disable",
@@ -67,19 +71,20 @@ def main():
 
 
     #segunda lista
-    tk.Frame.etiqueta_oficina = tk.Label (firstROOT, text="Oficina: ").grid(padx=10,pady=0,row=2,column=0,sticky="w")
+    tk.Frame.etiqueta_oficina = ttk.Label (firstROOT, text="Oficina: ", foreground="black").grid(padx=10,pady=0,row=2,column=0,sticky="w")
     lista_oficina = ttk.Combobox(
             firstROOT,
             state="readonly",
             values=["CLSCLD (SANTIAGO EMS)","CLSCLE (SANTIAGO OCPI CP)"],
-            width=30
+            width=30, 
+            foreground="black"
         )
     lista_oficina.grid(padx=0,pady=10,row=2, column=1, sticky='w')
     lista_oficina.set("CLSCLD (SANTIAGO EMS)")
 
 
     #tercera lista
-    tk.Frame.etiqueta_Operador = tk.Label (firstROOT, text="Operador: ").grid(padx=10,pady=0,row=3,column=0,sticky="w")
+    tk.Frame.etiqueta_Operador = ttk.Label (firstROOT, text="Operador: ").grid(padx=10,pady=0,row=3,column=0,sticky="w")
     lista_Operador = ttk.Combobox(
             firstROOT,
             state="disable",
@@ -92,7 +97,7 @@ def main():
     
     
     #cuarta lista
-    tk.Frame.etiqueta_cat = tk.Label (firstROOT, text="Cate. de correo predet. ").grid(padx=10,pady=0,row=4,column=0,sticky="w")
+    tk.Frame.etiqueta_cat = ttk.Label (firstROOT, text="Cate. de correo predet. ").grid(padx=10,pady=0,row=4,column=0,sticky="w")
     lista_cat = ttk.Combobox(
             firstROOT,
             state="disable",
@@ -108,13 +113,13 @@ def main():
 
     tk.Frame.boton_abrir = ttk.Button(firstROOT, text="aceptar", command=abrir, width=10)
     tk.Frame.boton_abrir.grid(padx=0,pady=20,row=5,column=1,sticky="w")
-    
+    style.configure('TButton', font=('American typewriter', 10), foreground='black')
 
 # widget: estilo ____
 
-    style = ttk.Style()
-    style.theme_use("clam")
-    firstROOT
+    
+    
+
 # desplegar ventana .
     firstROOT.mainloop()
 

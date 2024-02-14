@@ -5,6 +5,7 @@ from crud_lotes import read_all_lotes
 from crud_envios import read_envios_by_lotes
 import sys
 from Actualizar_lotes import actualizar_lotes
+from ttkthemes import ThemedTk
 
 def main_lotes(root):
     
@@ -20,7 +21,8 @@ def main_lotes(root):
         print(lista_productos)
         for item in lista_productos:
            
-            tree.insert('', 'end', text="1", values=(item.get('envio'), item.get('envase'),item.get('paisOrigen'), item.get('pesoEspecificado'), item.get('pesoPreaviso'), item.get('estadoActual'), item.get('paisDestino'), item.get('ultimaModificacion')))
+            item=tree.insert('', 'end', text="1", values=(item.get('envio'), item.get('envase'),item.get('paisOrigen'), item.get('pesoEspecificado'), item.get('pesoPreaviso'), item.get('estadoActual'), item.get('paisDestino'), item.get('ultimaModificacion')))
+            tree.item(item, tags=('estilo',))
     def volver():
         root.deiconify() 
         ROOT_lotes.destroy()
@@ -43,9 +45,12 @@ def main_lotes(root):
 # ____ Iniciar la ventana: 
     # llamar ventana
     ROOT_lotes = Toplevel()
+    color = ttk.Style().lookup("TFrame", "background", default="white")
+    
+    ROOT_lotes.configure(bg=color)   
     ROOT_lotes.title("Nuevo IPS")
     # datos para las dimesiones
-    w = 740
+    w = 760
     h = 400
     ws = ROOT_lotes.winfo_screenwidth()
     hs = ROOT_lotes.winfo_screenheight()
@@ -58,14 +63,16 @@ def main_lotes(root):
     ROOT_lotes.protocol("WM_DELETE_WINDOW", cerrar_ventana)
     ROOT_lotes.resizable(0,0)
     
-    style = ttk.Style()
-    style.theme_use('clam')
+
     
     ROOT_lotes
+    
 #________________________
+    style = ttk.Style()
+    style.configure('TButton', font=('American typewriter', 10), foreground='black')
+    style.configure('TLabel', font=('calibri', 10, 'bold'), foreground='black')
 
-
-
+ 
     # Lista desplegable 
     
     lista=[]
@@ -79,7 +86,8 @@ def main_lotes(root):
         ROOT_lotes,
         state="readonly",
         values=lista,
-        width=50
+        width=50,
+        foreground="black"
     )
     try:
         lista_lotes.current(0)
@@ -89,9 +97,9 @@ def main_lotes(root):
     lista_lotes.place(x=50,y=55)
 
     
-    boton_cargar = ttk.Button(ROOT_lotes, text="Cargar", command=cargar , width=10).place(x=50, y=80)
+    boton_cargar = ttk.Button(ROOT_lotes, text="Cargar", command=cargar , width=10).place(x=50, y=85)
     
-    tree = ttk.Treeview(ROOT_lotes, column=("c1", "c2", "c3","c4","c5","c6","c7","c8"), show='headings', height=6)
+    tree = ttk.Treeview(ROOT_lotes, column=("c1", "c2", "c3","c4","c5","c6","c7","c8"), show='headings', height=6, style="mystyle.Treeview")
     tree.column("# 1", anchor=CENTER, minwidth=0, width=80, stretch=NO)
     tree.heading("# 1", text="Envio")
     tree.column("# 2", anchor=CENTER, minwidth=0, width=80, stretch=NO)
@@ -99,9 +107,9 @@ def main_lotes(root):
     tree.column("# 3", anchor=CENTER, minwidth=0, width=80, stretch=NO)
     tree.heading("# 3", text="Pais de Origen")
     tree.column("# 4", anchor=CENTER, minwidth=0, width=80, stretch=NO)
-    tree.heading("# 4", text="Peso Real(kg.)")
+    tree.heading("# 4", text="Peso Real")
     tree.column("# 5", anchor=CENTER, minwidth=0, width=80, stretch=YES)
-    tree.heading("# 5", text="Peso con Preaviso (kg.)")
+    tree.heading("# 5", text="Peso con Preaviso")
     tree.column("# 6", anchor=CENTER, minwidth=0, width=80, stretch=NO)
     tree.heading("# 6", text="Estado Actual")
     tree.column("# 7", anchor=CENTER, minwidth=0, width=80, stretch=NO)
@@ -109,13 +117,17 @@ def main_lotes(root):
     tree.column("# 8", anchor=CENTER, minwidth=0, width=80, stretch=NO)
     tree.heading("# 8", text="Ultima Modificacion")
     tree.place(x=50, y=120)
+    tree.tag_configure('estilo', foreground='black')
+    style.configure("mystyle.Treeview.Heading", font=('Calibri', 9), foreground="black")
     
     
-    boton_atras = tk.Button(ROOT_lotes, text="Volver" , width=8, command=volver).place(x=625, y=20)
+    boton_atras = ttk.Button(ROOT_lotes, text="Volver" , width=8, command=volver).place(x=625, y=25)
     boton = ttk.Button(ROOT_lotes, text="Proceder Despacho" , width=18, command = act_dspcho).place(x=580, y=340)
     ROOT_lotes.mainloop()
     
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = ThemedTk(theme='arc')
+    root.set_theme_advanced('arc', brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
+    
     root.withdraw()
     main_lotes(root)

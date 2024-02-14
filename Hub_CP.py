@@ -4,6 +4,7 @@ from tkinter import ttk
 import tkinter as tk
 from tkinter import *
 import sys
+from ttkthemes import ThemedTk
 
 
 def hub_cp(firstROOT):
@@ -21,7 +22,7 @@ def hub_cp(firstROOT):
         firstROOT.destroy()
 
     def volver():
-        style.theme_use("clam")
+        
         firstROOT.deiconify() 
         cp_HubROOT.destroy()
         
@@ -37,8 +38,8 @@ def hub_cp(firstROOT):
     cp_HubROOT.title("Nuevo IPS")
     
     # datos para las dimesiones
-    w = 500
-    h = 513 
+    w = 525
+    h = 545 
     ws = cp_HubROOT.winfo_screenwidth()
     hs = cp_HubROOT.winfo_screenheight()
     x = (ws/2) - (w/2)
@@ -54,30 +55,32 @@ def hub_cp(firstROOT):
 
 
 # ____ Fijar estilo:
-
     style = ttk.Style()
-    style.theme_use("clam")
+    style.configure('TButton', font=('American typewriter', 10), foreground='black')
+    style.configure('TLabel', font=('calibri', 10, 'bold'), foreground='black')
+
 
 
 
 # ____ Manejo de viñetas:
     
     #definir las tabs de la ventana
-    tabControl = ttk.Notebook(cp_HubROOT)
+    tabControl = ttk.Notebook(cp_HubROOT, style='TNotebook', padding=5)
     tab1 = ttk.Frame(tabControl)
     tab2 = ttk.Frame(tabControl)
     
-    
+    style.configure('TNotebook.Tab', foreground='black')
     #abrir y modificar imagenes que van en las viñetas
-    ems_logo = tk.PhotoImage(file="icons/Ems-Logo.png")
-    ems_logo = ems_logo.subsample(26)
+    ems_logo = tk.PhotoImage(file="icons/Ems-Logo-old.png")
+    ems_logo = ems_logo.subsample(28)
     packagelogo= tk.PhotoImage(file="icons/packages.png")
     packagelogo= packagelogo.subsample(16)
 
-
+    
     #colcar el texto y la imagen sobre la viñeta. luego desplegar
-    tabControl.add(tab1, image=ems_logo, state="disable", compound='right') 
     tabControl.add(tab2, text ='Encomiendas (CP)',image=packagelogo,compound='left') 
+    tabControl.add(tab1, image=ems_logo, state="disable", compound='right') 
+    
     tabControl.grid(row=0,column=0)
 
 
@@ -87,9 +90,8 @@ def hub_cp(firstROOT):
     #definir el treeview 
     treeview = ttk.Treeview(tab2,show="tree",columns=("#0"), height=20)
 
-
     #fijar solamente una columna. esto permite modificar el ancho del treeview, dentro de la columna no hay nada realmente.
-    treeview.column("#0", anchor="w", minwidth=380, width=242, stretch=YES)
+    treeview.column("#0", anchor="w", minwidth=380, width=230, stretch=YES)
 
 
     #abrir y modificar iconos que se despliegan en el treeview
@@ -115,7 +117,7 @@ def hub_cp(firstROOT):
     treeview.selection_toggle(item_recibe)
     
     #Posicionar el treeview en la ventana
-    treeview.grid(row=0, column=0,padx=25,pady=10,columnspan=10, sticky="nsew")
+    treeview.grid(row=0, column=0,padx=25,pady=10,columnspan=10)
 
 
 # ____ widget: funcion que permite desactivar el boton de abrir si no esta en el item seleccionado correcto (item_recibe)
@@ -138,9 +140,9 @@ def hub_cp(firstROOT):
     tk.Frame.boton_abrir = ttk.Button(tab2, text="Ejecutar", command=abrir_front)
     tk.Frame.boton_abrir.grid(row=5,column=0,pady=5, ipadx=5)
     tk.Frame.boton_salir = ttk.Button(tab2, text="Salir", command=salir)
-    tk.Frame.boton_salir.place(x=395,y=425 )
+    tk.Frame.boton_salir.place(x=405,y=453 )
     tk.Frame.boton_ayuda = ttk.Button(tab2, text="Volver", command=volver)
-    tk.Frame.boton_ayuda.place(x=315,y=425)
+    tk.Frame.boton_ayuda.place(x=310,y=453)
 
 
 
@@ -150,6 +152,8 @@ def hub_cp(firstROOT):
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = ThemedTk(theme='arc')
+    root.set_theme_advanced('arc', brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
+    
     root.withdraw()
     hub_cp(root)
