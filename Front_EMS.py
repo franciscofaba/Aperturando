@@ -8,12 +8,12 @@ from tkinter import ttk
 import datetime
 from guardar import updt_prod_lot
 import sys
-from crud_envios import read_all_en_proceso, read_all_envios, read_envios, update_envios
+from crud_envios import read_all_en_proceso, read_envios, update_envios
 from tkinter import messagebox
-import openpyxl
+
 from manifiesto import generate_manifest
 from ttkthemes import ThemedTk
-from balanza import leer_balanza
+from balanza import leer_datos_pesa
 
 
 class UI(tk.Frame):
@@ -40,13 +40,18 @@ class UI(tk.Frame):
     
         def funcion_guardar(event=None):          
             if campo_de_texto_producto.get():
-                
-                primer_producto = self.lista_productos[0]
-                item=tree.insert('', 'end', text="1", values=(primer_producto.envio, primer_producto.envase, primer_producto.paisOrigen, primer_producto.pesoEspecificado, primer_producto.pesoPreaviso, primer_producto.estadoActual, primer_producto.paisDestino, primer_producto.ultimaModificacion, primer_producto.destino_cl))
+                id = campo_de_texto_producto.get()
+                primer_producto=llamar_producto(id)
                 campo_de_texto_producto.delete(0,100)
                 campo_de_texto_receptaculo.delete(0,100)
                 campo_de_texto_pais.delete(0,100)
                 campo_de_texto_peso.delete(0,100)
+                
+                item=tree.insert('', 'end', text="1", values=(primer_producto.envio, primer_producto.envase, primer_producto.paisOrigen, primer_producto.pesoEspecificado, primer_producto.pesoPreaviso, primer_producto.estadoActual, primer_producto.paisDestino, primer_producto.ultimaModificacion, primer_producto.destino_cl))
+                print("___")
+                
+                
+
                 
                 
                 if primer_producto.destino_cl == 'santiago':
@@ -63,18 +68,7 @@ class UI(tk.Frame):
                     "en_proceso":"si"
                 }
                 update_envios(id_envio, json_en_proceso)
-                print(update_envios)
-                self.lista_productos.pop(0)
-                quitar_destino()
-
-        def quitar_destino():
-            global global_label
-            
-            
-            if global_label:
-                global_label.destroy()
-                global_label = None
-                        
+                return
                 
 
 
@@ -94,12 +88,14 @@ class UI(tk.Frame):
                 hora_actual = datetime.datetime.now()
                 id_lote = updt_prod_lot(lista,estado_aduana,hora_actual)
                 generate_manifest(id_lote,estado_aduana)
-                messagebox.showinfo(message="Apertura exitosa! (lote quedo en estado de espera para ser despachado)", title="APERTURA")
                 tree.delete(*tree.get_children())
+                color = ttk.Style().lookup("TFrame", "background", default="white")
+                destino_label.config(text="", background=color)
+                messagebox.showinfo(message="Apertura exitosa! (lote quedo en estado de espera para ser despachado)", title="APERTURA")
                 return
             else:
                 messagebox.showwarning(message="Seleccione Liberado o Retenido para continuar.", title="APERTURA/warning")
-
+            
 
     #funcion para borrar solamente un producto
     
@@ -167,45 +163,53 @@ class UI(tk.Frame):
             
             
     
-        def display_destino():
-            global global_label
-            var_envio = self.lista_productos[0]
+        def display_destino(id):
             
-            if var_envio.destino_cl== 'santiago':
-                global_label = ttk.Label(self.parent, text="DESTINO:   SANTIAGO",background="green", font=("Arial", 30))
-                global_label.place(x=270,y=500)
-            elif var_envio.destino_cl== 'Santiago':
-                global_label = ttk.Label(self.parent, text="DESTINO:   SANTIAGO",background="green", font=("Arial", 30))
-                global_label.place(x=270,y=500)
+            nuevo_producto = llamar_producto(id)
+            var_envio = nuevo_producto
+            
+            if var_envio.destino_cl== 'Santiago':
+                destino_label.config(text="DESTINO:   SANTIAGO",background="green", font=("Arial", 30))
+                destino_label.place(x=270,y=500)
+            elif var_envio.destino_cl== 'santiago':
+                destino_label.config(text="DESTINO:   SANTIAGO",background="green", font=("Arial", 30))
+                destino_label.place(x=270,y=500)
             elif var_envio.destino_cl== 'Carteroresto':
-                global_label = ttk.Label(self.parent, text="DESTINO:   REGIÓN",background="BLUE", font=("Arial", 30))
-                global_label.place(x=270,y=500)
+                destino_label.config(text="DESTINO:   REGIÓN",background="BLUE", font=("Arial", 30))
+                destino_label.place(x=270,y=500)
             elif var_envio.destino_cl== 'carteroresto':
-                global_label = ttk.Label(self.parent, text="DESTINO:   REGIÓN",background="BLUE", font=("Arial", 30))
-                global_label.place(x=270,y=500)
-    
+                destino_label.config(text="DESTINO:   REGIÓN",background="BLUE", font=("Arial", 30))
+                destino_label.place(x=270,y=500)
+            
+            
 
             
             
     #esta funcion permite que al apretar Enter sobre el campo_de_texto_producto se llame a la api o se ejecute la funcion guardar dependiendo si ya se llamo o no a la api  
         def on_enter(id): 
+            
             if campo_de_texto_pais.get():
-                funcion_guardar()
-                return
+                self.parent.after(1000,funcion_guardar)
             else:
                 nuevo_producto = llamar_producto(id)
                 campo_de_texto_receptaculo.insert(0,nuevo_producto.envase)
                 campo_de_texto_pais.insert(0,nuevo_producto.paisOrigen)
-                peso = leer_balanza()
+                peso = leer_datos_pesa()
+                peso = peso[7:]
+                peso = peso[:-2]
+                actualizar_peso(id,peso)
                 campo_de_texto_peso.insert(0,peso)
-                self.lista_productos.append(nuevo_producto)
-                display_destino()
+                nuevo_producto = llamar_producto(id)
+                self.update()
+                display_destino(id)
+                self.update()
                 return
-            
+               
             
     #esta funcion permite limitar a solo 13 caracteres el campo de texto de producto
     
         def limitar_longitud(*args):
+            
             max_chars = 13  # Establece el número máximo de caracteres permitidos
             current_text = campo_de_texto_producto.get()
             if len(current_text) > max_chars:
@@ -213,6 +217,18 @@ class UI(tk.Frame):
                 campo_de_texto_producto.delete(0, tk.END)
                 campo_de_texto_producto.insert(0, new_text)
                 
+            
+            if len(current_text) == max_chars:
+                if current_text[0] == "C":
+                    return
+                elif current_text[0] == "E":                    
+
+                    on_enter(current_text)
+                    return 
+                else:
+                    return
+                
+            
         def comprobar_guardado():
             en_proceso = read_all_en_proceso()
             if en_proceso:
@@ -254,14 +270,21 @@ class UI(tk.Frame):
             elif objeto_envio.get('destino_cl')== 'carteroresto':
                 tree.item(item, tags=('carteroresto',))
             
-
+        def actualizar_peso(id,peso):
+            json_peso={
+                "pesoEspecificado": float(peso)
+            }
+            actualizacion = update_envios(id,json_peso)
+            
+            return(print(actualizacion))
+                
+                
 # WiDGET: ________________________________________________________________________
         #seleccionar el estilo de la ventana
         
         style = ttk.Style()
         style.configure('TButton', font=('American typewriter', 10), foreground='black')
         style.configure('TLabel', font=('calibri', 10, 'bold'), foreground='black')
-
         
         
     # titulo de la ventana
@@ -280,11 +303,7 @@ class UI(tk.Frame):
         campo_de_texto_producto= ttk.Entry(self.parent, width=50, foreground='black')
         campo_de_texto_producto.place(x=80,y=55)
         campo_de_texto_producto.bind("<KeyRelease>", limitar_longitud)
-        try:
-            
-            campo_de_texto_producto.bind("<Return>", lambda event: on_enter(campo_de_texto_producto.get()))
-        except Exception as e:
-            print("sigue...", e)
+        
         
 
     # segundo campo de texto (Envase)
@@ -306,7 +325,7 @@ class UI(tk.Frame):
     # cuarto campo de texto (Peso)
         etiqueta_peso= ttk.Label(self.parent, text="Peso:")
         etiqueta_peso.place(x=80,y=185)
-        campo_de_texto_peso= ttk.Entry(self.parent, width=50)
+        campo_de_texto_peso= ttk.Entry(self.parent, width=50, foreground="black")
         campo_de_texto_peso.place(x=80,y=205)
         
         
@@ -366,9 +385,6 @@ class UI(tk.Frame):
        
 
 
- 
-
-
 
     
     
@@ -397,7 +413,7 @@ class UI(tk.Frame):
         tree.place(x=80, y=300, height=170)
         
         style.configure("mystyle.Treeview.Heading", font=('Calibri', 9), foreground="black")
-        tree.bind("<<TreeviewSelect>>", display_destino)
+        
     # bind para hacer doble click en un producto y modificarlo
         tree.bind('<Double-1>', set_cell_value)
             
@@ -431,7 +447,8 @@ class UI(tk.Frame):
     
 # variables globales: ________
 
-        global_label = None
+        destino_label = Label(self.parent, text="")
+        destino_label.place(x=270,y=500)
         comprobar_guardado()        
 #____________________________________________________________________#
 

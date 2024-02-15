@@ -1,5 +1,5 @@
 import requests
-base_url = 'http://10.88.241.26:3000/api'
+base_url = 'http://192.168.56.1:3000/api'
 
 def create_lotes(data):
     try:

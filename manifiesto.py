@@ -57,13 +57,20 @@ def generate_manifest(id_lote,estado_aduana):
         c.drawString(60, 650, f"ID envio:")
         c.drawString(220, 650, f"ID envase:")
         
-        contador = 620
+        contador = 630
         for i in lista:
-                id_envios = c.drawString(60, contador, f"{i.get("envio")}")
-                id_envios.setFont("Times-Roman", 12)
-                id_envase = c.drawString(220, contador, f"{i.get("envase")}")
-                id_envase.setFont("Times-Roman", 12)
-                contador-=20
+                # id_envios = c.drawString(60, contador, str(i.get("envio")) )
+                # id_envase = c.drawString(220, contador, str(i.get("envase")) )
+                id_envio2 = c.beginText(60, contador)
+                id_envio2.setFont("Times-Roman", 10)
+                id_envio2.textLine( str(i.get("envio")) )
+                c.drawText(id_envio2)
+                id_envase = c.beginText(220, contador)
+                id_envase.setFont("Helvetica", 10)
+                id_envase.textLine( str(i.get("envase")) )
+                c.drawText(id_envase)
+          
+                contador-=10
         
         
         c.save()

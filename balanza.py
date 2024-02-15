@@ -1,15 +1,20 @@
 import serial
 
+def leer_datos_pesa( baud_rate=9600, bytes_size=8, timeout=1):
+    try:
+        puerto_serial = "COM3"
+        # Configurar la conexión serial
+        conexion = serial.Serial(port=puerto_serial, baudrate=baud_rate, bytesize=bytes_size, timeout=timeout)
+        print("Conexión establecida con éxito a", puerto_serial)
 
-def leer_balanza(puerto):
-    puerto_balanza = '/dev/ttyUSB0' 
-    ser = serial.Serial(puerto, 9600, timeout=1)
-    ser.flush()
-    
-    if ser.in_waiting > 0:
-        linea = ser.readline().decode('utf-8').rstrip()
-        return linea
+        # Bucle infinito para leer continuamente datos de la pesa
+        while True:
+            datos = conexion.readline().decode().strip()
+            print(datos)
+            print("Conexión holandauhjyty")
+            if datos:
+                return datos  # Devolver los datos leídos
 
-if __name__ == '__main__':
-    puerto_balanza = '/dev/ttyUSB0'  # Reemplaza esto con el nombre de tu puerto serial
-    leer_balanza(puerto_balanza)
+    except serial.SerialException as e:
+        print("Error al conectar con la pesa:", e)
+
