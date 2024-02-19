@@ -6,13 +6,13 @@ from tkinter import *
 import sys
 from ttkthemes import ThemedTk
 
+
 def main():
     
 # ____Funciones: 
     def cerrar_ventana():
-                sys.exit()    
-                ROOT_CP.destroy()
-
+        sys.exit()    
+        ROOT_CP.destroy()
 
     def abrir_hub_EMS():
         firstROOT.withdraw()
@@ -121,8 +121,8 @@ def main():
     
 
 # desplegar ventana .
+    
     firstROOT.mainloop()
 
-if __name__ == "__main__":
 
-    main()
+main()

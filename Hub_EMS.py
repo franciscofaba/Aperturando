@@ -140,11 +140,11 @@ def hub_ems(firstROOT):
 #  desplegar ventana .
     ems_HubROOT.mainloop()
 
-if __name__ == "__main__":
-    root = ThemedTk(theme='arc')
-    root.set_theme_advanced('arc', brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
-    style = ttk.Style()
-    style.configure('TButton', font=('American typewriter', 10), foreground='black')
-    style.configure('TLabel', font=('calibri', 10, 'bold'), foreground='black')
-    root.withdraw()
-    hub_ems(root)
+# if __name__ == "__main__":
+#     root = ThemedTk(theme='arc')
+#     root.set_theme_advanced('arc', brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
+#     style = ttk.Style()
+#     style.configure('TButton', font=('American typewriter', 10), foreground='black')
+#     style.configure('TLabel', font=('calibri', 10, 'bold'), foreground='black')
+#     root.withdraw()
+#     hub_ems(root)

@@ -10,26 +10,37 @@ from guardar import updt_prod_lot
 import sys
 from crud_envios import read_all_en_proceso, read_envios, update_envios
 from tkinter import messagebox
-
 from manifiesto import generate_manifest
 from ttkthemes import ThemedTk
 from balanza import leer_datos_pesa
-
+from threading import Thread
+import serial
+from port_scan import find_serial_ports, scan
 
 class UI(tk.Frame):
-    def __init__(self, root,lista_productos, parent=None):
+    def __init__(self, root, parent=None):
         tk.Frame.__init__(self, parent)
         self.parent = parent
-        self.lista_productos = lista_productos
+        self.data_text = tk.Text(parent, wrap="word")
+        self.data_text.pack(expand=True, fill="both")
         self.init_ui(root)
         
-        
-
-
     def init_ui(self, root):
         
+        def cerrar_ventana():
+            global romper_ciclo
+            romper_ciclo=True
+            self.update()
+            self.parent.withdraw()
+            del self.parent
+            sys.exit()
+            
+
     # Funciones: ____________________________________________________________
         def volver():
+            global romper_ciclo
+            romper_ciclo=True
+            self.update()
             root.deiconify() 
             self.parent.destroy()
     
@@ -89,8 +100,7 @@ class UI(tk.Frame):
                 id_lote = updt_prod_lot(lista,estado_aduana,hora_actual)
                 generate_manifest(id_lote,estado_aduana)
                 tree.delete(*tree.get_children())
-                color = ttk.Style().lookup("TFrame", "background", default="white")
-                destino_label.config(text="", background=color)
+                
                 messagebox.showinfo(message="Apertura exitosa! (lote quedo en estado de espera para ser despachado)", title="APERTURA")
                 return
             else:
@@ -194,8 +204,7 @@ class UI(tk.Frame):
                 nuevo_producto = llamar_producto(id)
                 campo_de_texto_receptaculo.insert(0,nuevo_producto.envase)
                 campo_de_texto_pais.insert(0,nuevo_producto.paisOrigen)
-                peso = leer_datos_pesa()
-                peso = peso[7:]
+                peso = campo_de_texto_peso.get()
                 peso = peso[:-2]
                 actualizar_peso(id,peso)
                 campo_de_texto_peso.insert(0,peso)
@@ -214,7 +223,7 @@ class UI(tk.Frame):
             current_text = campo_de_texto_producto.get()
             if len(current_text) > max_chars:
                 new_text = current_text[:max_chars]
-                campo_de_texto_producto.delete(0, tk.END)
+                campo_de_texto_producto.delete(0, 100)
                 campo_de_texto_producto.insert(0, new_text)
                 
             
@@ -246,16 +255,17 @@ class UI(tk.Frame):
                     
                     for envio in en_proceso:
                         id = envio.get("envio")
-                        update = update_envios(id, datos)
+                        update_envios(id, datos)
+            return
                     
                     
         def insertar_recuperacion(objeto_envio):
             item = tree.insert('', 'end', text="1", values=(
             objeto_envio.get('envio'), 
-            objeto_envio.get('paisOrigen'), 
-            objeto_envio.get('pesoEspecificado'), 
             objeto_envio.get('envase'), 
+            objeto_envio.get('paisOrigen'), 
             objeto_envio.get('pesoPreaviso'), 
+            objeto_envio.get('pesoEspecificado'), 
             objeto_envio.get('estadoActual'), 
             objeto_envio.get('paisDestino'), 
             objeto_envio.get('ultimaModificacion'),
@@ -277,14 +287,81 @@ class UI(tk.Frame):
             actualizacion = update_envios(id,json_peso)
             
             return(print(actualizacion))
+        
+        
+        def ejecutar_en_segundo_plano():
+
+            def leer_datos_pesa2():
+               
+                def conectar_puertos(ports):
+                    # Configuración de la conexión serial
+                    baud_rate = 1200
+                    bytes_size = 8
+                    timeout = 1
+                    for puerto_serial in ports:
+                        try:
+                            # Intentar establecer la conexión serial
+                            conexion = serial.Serial(port=puerto_serial, baudrate=baud_rate, bytesize=bytes_size, timeout=timeout)
+                            print("Conexión establecida con éxito a", puerto_serial)
+                            
+                            # Salir de la función si la conexión es exitosa
+                            return conexion
+                        
+                        except serial.SerialException as e:
+                            print("Error al conectar a", puerto_serial, ":", e)
+
                 
                 
+                try:
+                    ports = find_serial_ports()
+                    conexion = conectar_puertos(ports)
+                    global correr_hilo
+                    global romper_ciclo
+                    while correr_hilo:
+                        if romper_ciclo:
+                            break
+                        datos = conexion.readline().decode().strip()
+                        if datos:
+                            # Aquí podrías procesar los datos o almacenarlos en una lista
+                            procesar_datos(datos)
+
+                except serial.SerialException as e:
+                    print("Error al conectar con la pesa:", e)
+                
+
+            def procesar_datos(datos):
+                datos_recortados = datos[7:]
+
+                # Esta función puede ser utilizada para procesar o almacenar los datos recibidos
+                try:
+                    campo_de_texto_peso.delete(0,100) 
+                except tk.TclError as e:
+                    # Manejar el error específico de TclError (podría ser debido a la falta de contenido)
+                    print("Error al borrar el contenido del campo de texto:", e)
+                campo_de_texto_peso.insert(0, datos_recortados)   # Insert new data
+
+           
+        
+        
+            t = Thread(target=leer_datos_pesa2)
+            t.setDaemon(True)
+            t.start()
+            
+        
+        
+        self.parent.protocol("WM_DELETE_WINDOW", cerrar_ventana)
+        
+            
+ 
+   
 # WiDGET: ________________________________________________________________________
         #seleccionar el estilo de la ventana
         
         style = ttk.Style()
         style.configure('TButton', font=('American typewriter', 10), foreground='black')
         style.configure('TLabel', font=('calibri', 10, 'bold'), foreground='black')
+        color = ttk.Style().lookup("TFrame", "background", default="white")
+        self.parent.configure(bg=color)
         
         
     # titulo de la ventana
@@ -449,10 +526,16 @@ class UI(tk.Frame):
 
         destino_label = Label(self.parent, text="")
         destino_label.place(x=270,y=500)
-        comprobar_guardado()        
-#____________________________________________________________________#
-
         
+        ejecutar_en_segundo_plano()
+        self.after(500, comprobar_guardado)
+        
+#____________________________________________________________________#
+        
+        
+        
+
+
         
         
 
@@ -462,15 +545,12 @@ class UI(tk.Frame):
 
 def iniciar_ventana(root):
    
-    def cerrar_ventana():
-        sys.exit()    
-        ROOT_EMS.destroy()
+    
 
     # llamar ventana
     
     ROOT_EMS = Toplevel()
     color = ttk.Style().lookup("TFrame", "background", default="white")
-    
     ROOT_EMS.configure(bg=color)
     # datos para las dimesiones
     w = 1000
@@ -482,7 +562,7 @@ def iniciar_ventana(root):
 
     # especificaciones de la ventana
     ROOT_EMS.geometry('%dx%d+%d+%d' % (w, h, x, y))
-    ROOT_EMS.protocol("WM_DELETE_WINDOW", cerrar_ventana)
+    
     ROOT_EMS.resizable(0,0)
     
     
@@ -491,16 +571,17 @@ def iniciar_ventana(root):
     
     # abrir la ventana
     lista_productos = []
-    APP = UI(root,lista_productos,parent=ROOT_EMS)
+    APP = UI(root,parent=ROOT_EMS)
     #seleccionar el estilo de la ventana
     APP.mainloop()
 
 
     
-if __name__ == "__main__":
-    root = ThemedTk(theme='arc')
-    root.set_theme_advanced('arc', brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
-    
-    root.withdraw()
-    iniciar_ventana(root)
-        
+# if __name__ == "__main__":
+#     root = ThemedTk(theme='arc')
+#     root.set_theme_advanced('arc', brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
+#     color = ttk.Style().lookup("TFrame", "background", default="white")
+#     root.withdraw()
+#     iniciar_ventana(root)
+romper_ciclo = False
+correr_hilo = True

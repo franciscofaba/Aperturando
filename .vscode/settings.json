@@ -1,5 +1,8 @@
 {
     "python.analysis.typeCheckingMode": "off",
     "python.analysis.autoImportCompletions": true,
-    "python.analysis.fixAll": []
+    "python.analysis.fixAll": [],
+    "python.REPL.enableREPLSmartSend": true,
+    "python.globalModuleInstallation": false,
+    "python.terminal.activateEnvInCurrentTerminal": true
 }

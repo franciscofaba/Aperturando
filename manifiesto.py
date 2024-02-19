@@ -17,8 +17,10 @@ def cargar(id_lote):
 
 
 def generate_barcode(id_lote):
+        
         barcode_param = str(id_lote)
-        barcode_text = str(id_lote)
+        barcode_param  = barcode_param .replace("-", "/")
+        print(id_lote)
 
         barcode_image = code128.image(barcode_param, height=100)
         w, h = barcode_image.size
@@ -27,7 +29,7 @@ def generate_barcode(id_lote):
         new_image = Image.new('RGB', (w, new_h), (255, 255, 255))
         new_image.paste(barcode_image, (0, margin))
         draw = ImageDraw.Draw(new_image)
-        draw.text((20, new_h - 10), barcode_text, fill=(0, 0, 0))#, font=fnt)  # 
+        
         path='manifiesto_bin/barcode.png'
         new_image.save(path, 'PNG')
         
@@ -91,3 +93,6 @@ def imprimir_pdf(ruta_pdf):
                 print("El archivo se ha enviado a imprimir correctamente.")
 
         # Llamar a la función e indicar la ruta del archivo PDF a imprimir
+if __name__ == "__main__":
+        id_lote="/"
+        generate_barcode(id_lote)

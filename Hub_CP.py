@@ -151,9 +151,9 @@ def hub_cp(firstROOT):
 
 
 
-if __name__ == "__main__":
-    root = ThemedTk(theme='arc')
-    root.set_theme_advanced('arc', brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
+# if __name__ == "__main__":
+#     root = ThemedTk(theme='arc')
+#     root.set_theme_advanced('arc', brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
     
-    root.withdraw()
-    hub_cp(root)
+#     root.withdraw()
+#     hub_cp(root)

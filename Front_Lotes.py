@@ -16,6 +16,16 @@ def main_lotes(root):
 
     def cargar():
         tree.delete(*tree.get_children())
+        id_lotes = campo_de_texto_id.get()
+        lista_productos = read_envios_by_lotes(id_lotes)
+        print(lista_productos)
+        for item in lista_productos:
+           
+            item=tree.insert('', 'end', text="1", values=(item.get('envio'), item.get('envase'),item.get('paisOrigen'), item.get('pesoEspecificado'), item.get('pesoPreaviso'), item.get('estadoActual'), item.get('paisDestino'), item.get('ultimaModificacion')))
+            tree.item(item, tags=('estilo',))
+            
+    def cargar2():
+        tree.delete(*tree.get_children())
         id_lotes = lista_lotes.get()
         lista_productos = read_envios_by_lotes(id_lotes)
         print(lista_productos)
@@ -23,6 +33,7 @@ def main_lotes(root):
            
             item=tree.insert('', 'end', text="1", values=(item.get('envio'), item.get('envase'),item.get('paisOrigen'), item.get('pesoEspecificado'), item.get('pesoPreaviso'), item.get('estadoActual'), item.get('paisDestino'), item.get('ultimaModificacion')))
             tree.item(item, tags=('estilo',))
+            
     def volver():
         root.deiconify() 
         ROOT_lotes.destroy()
@@ -65,15 +76,28 @@ def main_lotes(root):
     
 
     
-    ROOT_lotes
+    
     
 #________________________
+
+
+
+    
+    
+    
     style = ttk.Style()
     style.configure('TButton', font=('American typewriter', 10), foreground='black')
     style.configure('TLabel', font=('calibri', 10, 'bold'), foreground='black')
 
  
-    # Lista desplegable 
+    etiqueta_id= ttk.Label(ROOT_lotes, text="Ingresar Codigo de barras:")
+    etiqueta_id.place(x=50,y=10)
+    campo_de_texto_id= ttk.Entry(ROOT_lotes, width=50, foreground="black")
+    campo_de_texto_id.place(x=50,y=30)
+
+ 
+ 
+    # Lista desplegable
     
     lista=[]
     try:
@@ -81,23 +105,21 @@ def main_lotes(root):
     except Exception as e:
         print("Ocurrió un error:", e)
     
-    etiqueta_lotes= tk.Label(ROOT_lotes, text="Lotes disponibles para despacho:").place(x=50,y=30)
+    etiqueta_lotes= tk.Label(ROOT_lotes, text="Lotes disponibles para despacho:").place(x=50,y=55)
     lista_lotes = ttk.Combobox(
         ROOT_lotes,
         state="readonly",
         values=lista,
-        width=50,
+        width=20,
         foreground="black"
     )
-    try:
-        lista_lotes.current(0)
-    except Exception as e:
-        print("Ocurrió un error:", e)
+    
         
-    lista_lotes.place(x=50,y=55)
+    lista_lotes.place(x=50,y=79)
 
     
-    boton_cargar = ttk.Button(ROOT_lotes, text="Cargar", command=cargar , width=10).place(x=50, y=85)
+    boton_cargar = ttk.Button(ROOT_lotes, text="Cargar", command=cargar , width=8).place(x=370, y=28)
+    boton_cargar = ttk.Button(ROOT_lotes, text="Ok", command=cargar2 , width=3).place(x=200, y=77)
     
     tree = ttk.Treeview(ROOT_lotes, column=("c1", "c2", "c3","c4","c5","c6","c7","c8"), show='headings', height=6, style="mystyle.Treeview")
     tree.column("# 1", anchor=CENTER, minwidth=0, width=80, stretch=NO)
@@ -121,13 +143,13 @@ def main_lotes(root):
     style.configure("mystyle.Treeview.Heading", font=('Calibri', 9), foreground="black")
     
     
-    boton_atras = ttk.Button(ROOT_lotes, text="Volver" , width=8, command=volver).place(x=625, y=25)
+    boton_atras = ttk.Button(ROOT_lotes, text="Volver" , width=8, command=volver).place(x=641, y=10)
     boton = ttk.Button(ROOT_lotes, text="Proceder Despacho" , width=18, command = act_dspcho).place(x=580, y=340)
     ROOT_lotes.mainloop()
     
-if __name__ == "__main__":
-    root = ThemedTk(theme='arc')
-    root.set_theme_advanced('arc', brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
+# if __name__ == "__main__":
+#     root = ThemedTk(theme='arc')
+#     root.set_theme_advanced('arc', brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
     
-    root.withdraw()
-    main_lotes(root)
+#     root.withdraw()
+#     main_lotes(root)
