@@ -58,7 +58,7 @@ class UI(tk.Frame):
     #esta funcion pasa los atributos desde los campos de texto al treeview
     
         def funcion_guardar(event=None):          
-            if campo_de_texto_producto.get():
+            if campo_de_texto_producto.get()[0] == "C":
                 
                 id = campo_de_texto_producto.get()
                 primer_producto=llamar_producto(id)
@@ -560,11 +560,11 @@ def iniciar_ventana_cp(root):
 
 
     
-# if __name__ == "__main__":
-#     root = ThemedTk(theme='arc')
-#     root.set_theme_advanced('arc', brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
-#     root.withdraw()
-#     iniciar_ventana_cp(root)
-#variable global
+if __name__ == "__main__":
+    root = ThemedTk(theme='arc')
+    root.set_theme_advanced('arc', brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
+    root.withdraw()
+    iniciar_ventana_cp(root)
+
 
 romper_ciclo = False

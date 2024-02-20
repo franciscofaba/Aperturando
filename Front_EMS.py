@@ -51,7 +51,7 @@ class UI(tk.Frame):
             main_lotes(self.parent)
     
         def funcion_guardar(event=None):          
-            if campo_de_texto_producto.get():
+            if campo_de_texto_producto.get()[0] == "E":
                 id = campo_de_texto_producto.get()
                 primer_producto=llamar_producto(id)
                 campo_de_texto_producto.delete(0,100)
@@ -224,7 +224,7 @@ class UI(tk.Frame):
             current_text = campo_de_texto_producto.get()
             if len(current_text) > max_chars:
                 new_text = current_text[:max_chars]
-                campo_de_texto_producto.delete(0, 100)
+                campo_de_texto_producto.delete(0, tk.END)
                 campo_de_texto_producto.insert(0, new_text)
                 
             
