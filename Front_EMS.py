@@ -8,7 +8,7 @@ from tkinter import ttk
 import datetime
 from guardar import updt_prod_lot
 import sys
-from crud_envios import read_all_en_proceso, read_envios, update_envios
+from crud_envios import read_all_en_proceso_ems, read_envios, update_envios
 from tkinter import messagebox
 from manifiesto import generate_manifest
 from ttkthemes import ThemedTk
@@ -77,7 +77,7 @@ class UI(tk.Frame):
                     
                 id_envio = primer_producto.envio
                 json_en_proceso = {
-                    "en_proceso":"si"
+                    "en_proceso":"si_ems"
                 }
                 update_envios(id_envio, json_en_proceso)
                 return
@@ -203,6 +203,8 @@ class UI(tk.Frame):
                 self.parent.after(1000,funcion_guardar)
             else:
                 nuevo_producto = llamar_producto(id)
+                if nuevo_producto.en_proceso=="si_ems":
+                    return 
                 campo_de_texto_receptaculo.insert(0,nuevo_producto.envase)
                 campo_de_texto_pais.insert(0,nuevo_producto.paisOrigen)
                 peso = campo_de_texto_peso.get()
@@ -241,7 +243,7 @@ class UI(tk.Frame):
                 
             
         def comprobar_guardado():
-            en_proceso = read_all_en_proceso()
+            en_proceso = read_all_en_proceso_ems()
             if en_proceso:
                 respuesta_messagebox=(messagebox.askyesno(message="No se guardo correctamente la sesion anterior ¿Desea continuar?", title="ALERTA"))
                 print(respuesta_messagebox)

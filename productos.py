@@ -2,7 +2,7 @@
 from crud_envios import read_envios
 
 class Producto:
-    def __init__(self, envio, envase, paisOrigen, pesoEspecificado, pesoPreaviso, estadoActual, paisDestino, ultimaModificacion, destino_cl, destino_aduana, id_lote):
+    def __init__(self, envio, envase, paisOrigen, pesoEspecificado, pesoPreaviso, estadoActual, paisDestino, ultimaModificacion, destino_cl, destino_aduana, id_lote, en_proceso):
         self.envio = envio
         self.envase = envase
         self.paisOrigen = paisOrigen
@@ -14,6 +14,7 @@ class Producto:
         self.destino_cl = destino_cl
         self.destino_aduana = destino_aduana
         self.id_lote = id_lote
+        self.en_proceso= en_proceso
 
 def llamar_producto(var_ID):
 
@@ -33,8 +34,8 @@ def llamar_producto(var_ID):
     destino_cl=data.get('destino_cl')
     destino_aduana = data.get('destino_aduana')
     id_lote = data.get('id_lote')
-
-    objeto = Producto(envio, envase, paisOrigen, pesoPreaviso, pesoEspecificado, estadoActual, paisDestino, ultimaModificacion, destino_cl,destino_aduana, id_lote)
+    en_proceso = data.get('en_proceso')
+    objeto = Producto(envio, envase, paisOrigen, pesoPreaviso, pesoEspecificado, estadoActual, paisDestino, ultimaModificacion, destino_cl,destino_aduana, id_lote, en_proceso)
 
     return(objeto)
   

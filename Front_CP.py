@@ -7,7 +7,7 @@ from tkinter import ttk
 from datetime import datetime
 import sys
 from guardar import updt_prod_lot
-from crud_envios import read_envios, read_all_en_proceso, update_envios
+from crud_envios import read_envios, read_all_en_proceso_cp, update_envios
 from Front_Lotes import main_lotes
 from tkinter import messagebox
 from ttkthemes import ThemedTk
@@ -82,7 +82,7 @@ class UI(tk.Frame):
                     
                 id_envio = primer_producto.envio
                 json_en_proceso = {
-                    "en_proceso":"si"
+                    "en_proceso":"si_cp"
                 }
                 update_envios(id_envio, json_en_proceso)
                 return
@@ -208,6 +208,8 @@ class UI(tk.Frame):
                 self.parent.after(1000,funcion_guardar)
             else:
                 nuevo_producto = llamar_producto(id)
+                if nuevo_producto.en_proceso=="si_cp":
+                    return 
                 campo_de_texto_receptaculo.insert(0,nuevo_producto.envase)
                 campo_de_texto_pais.insert(0,nuevo_producto.paisOrigen)
                 peso = campo_de_texto_peso.get()
@@ -244,7 +246,7 @@ class UI(tk.Frame):
                     return
                 
         def comprobar_guardado():
-            en_proceso = read_all_en_proceso()
+            en_proceso = read_all_en_proceso_cp()
             if en_proceso:
                 respuesta_messagebox=(messagebox.askyesno(message="¿Desea recuperar los envios que no fueron asignados a un lote?", title="Título"))
                 print(respuesta_messagebox)

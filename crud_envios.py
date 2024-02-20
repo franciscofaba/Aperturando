@@ -68,3 +68,21 @@ def read_all_en_proceso():
     except Exception as e:
         print(f"Error al leer todos los datos: {e}")
         return None
+    
+def read_all_en_proceso_cp():
+    try:
+        url = f'{base_url}/envios1/procesocp/'
+        response = requests.get(url)
+        return response.json()
+    except Exception as e:
+        print(f"Error al leer todos los datos: {e}")
+        return None
+    
+def read_all_en_proceso_ems():
+    try:
+        url = f'{base_url}/envios1/procesoems/'
+        response = requests.get(url)
+        return response.json()
+    except Exception as e:
+        print(f"Error al leer todos los datos: {e}")
+        return None
