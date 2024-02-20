@@ -33,6 +33,7 @@ def generate_barcode(id_lote):
         path='manifiesto_bin/barcode.png'
         new_image.save(path, 'PNG')
         
+        
 
 def generate_manifest(id_lote,estado_aduana):
         generate_barcode(id_lote)
@@ -93,6 +94,7 @@ def imprimir_pdf(ruta_pdf):
                 print("El archivo se ha enviado a imprimir correctamente.")
 
         # Llamar a la función e indicar la ruta del archivo PDF a imprimir
+        
 if __name__ == "__main__":
         id_lote="/"
         generate_barcode(id_lote)

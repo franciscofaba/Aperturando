@@ -12,17 +12,18 @@ from crud_envios import read_all_en_proceso, read_envios, update_envios
 from tkinter import messagebox
 from manifiesto import generate_manifest
 from ttkthemes import ThemedTk
-from balanza import leer_datos_pesa
+
 from threading import Thread
 import serial
 from port_scan import find_serial_ports, scan
+
+
 
 class UI(tk.Frame):
     def __init__(self, root, parent=None):
         tk.Frame.__init__(self, parent)
         self.parent = parent
-        self.data_text = tk.Text(parent, wrap="word")
-        self.data_text.pack(expand=True, fill="both")
+
         self.init_ui(root)
         
     def init_ui(self, root):
@@ -39,10 +40,10 @@ class UI(tk.Frame):
     # Funciones: ____________________________________________________________
         def volver():
             global romper_ciclo
-            romper_ciclo=True
+            romper_ciclo = True
             self.update()
             root.deiconify() 
-            self.parent.destroy()
+            self.parent.withdraw()
     
     #esta funcion pasa los atributos desde los campos de texto al treeview
         def abrir_lotes():
@@ -290,9 +291,9 @@ class UI(tk.Frame):
         
         
         def ejecutar_en_segundo_plano():
-
             def leer_datos_pesa2():
-               
+                global romper_ciclo
+                romper_ciclo = False
                 def conectar_puertos(ports):
                     # Configuración de la conexión serial
                     baud_rate = 1200
@@ -303,9 +304,13 @@ class UI(tk.Frame):
                             # Intentar establecer la conexión serial
                             conexion = serial.Serial(port=puerto_serial, baudrate=baud_rate, bytesize=bytes_size, timeout=timeout)
                             print("Conexión establecida con éxito a", puerto_serial)
-                            
+                            try:
+                                datos = conexion.readline().decode().strip()
+                            except Exception as e:  # Captura cualquier excepción
+                                print("Ocurrió un error:", e)
+                            if "kg" in datos:
                             # Salir de la función si la conexión es exitosa
-                            return conexion
+                                return conexion
                         
                         except serial.SerialException as e:
                             print("Error al conectar a", puerto_serial, ":", e)
@@ -315,18 +320,20 @@ class UI(tk.Frame):
                 try:
                     ports = find_serial_ports()
                     conexion = conectar_puertos(ports)
-                    global correr_hilo
-                    global romper_ciclo
-                    while correr_hilo:
+                    
+                    
+                    while True:
+                        
                         if romper_ciclo:
                             break
+                        
                         datos = conexion.readline().decode().strip()
                         if datos:
                             # Aquí podrías procesar los datos o almacenarlos en una lista
                             procesar_datos(datos)
-
+                        
                 except serial.SerialException as e:
-                    print("Error al conectar con la pesa:", e)
+                    print("Error al conectar con la pesa:", e)  
                 
 
             def procesar_datos(datos):
@@ -356,11 +363,11 @@ class UI(tk.Frame):
    
 # WiDGET: ________________________________________________________________________
         #seleccionar el estilo de la ventana
-        
+        color = ttk.Style().lookup("TFrame", "background", default="white")
         style = ttk.Style()
         style.configure('TButton', font=('American typewriter', 10), foreground='black')
         style.configure('TLabel', font=('calibri', 10, 'bold'), foreground='black')
-        color = ttk.Style().lookup("TFrame", "background", default="white")
+        
         self.parent.configure(bg=color)
         
         
@@ -575,7 +582,6 @@ def iniciar_ventana(root):
     #seleccionar el estilo de la ventana
     APP.mainloop()
 
-
     
 # if __name__ == "__main__":
 #     root = ThemedTk(theme='arc')
@@ -583,5 +589,7 @@ def iniciar_ventana(root):
 #     color = ttk.Style().lookup("TFrame", "background", default="white")
 #     root.withdraw()
 #     iniciar_ventana(root)
+
+
+#variable global
 romper_ciclo = False
-correr_hilo = True

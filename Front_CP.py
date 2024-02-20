@@ -18,6 +18,8 @@ import serial
 from port_scan import find_serial_ports, scan
 
 
+
+
 class UI(tk.Frame):
     def __init__(self, root,lista_productos, parent=None):
         tk.Frame.__init__(self, parent)
@@ -43,11 +45,11 @@ class UI(tk.Frame):
         
         def volver():
             global romper_ciclo
-            romper_ciclo=True
+            romper_ciclo = True
             self.update()
-            self.parent.withdraw()
             root.deiconify() 
-            self.parent.destroy()
+            self.parent.withdraw()
+    
             
         def abrir_lotes():
                 self.parent.withdraw()
@@ -100,7 +102,7 @@ class UI(tk.Frame):
             estado_aduana = estado_var.get()
             
             if estado_aduana:
-                hora_actual = datetime.datetime.now()
+                hora_actual = datetime.now()
                 id_lote = updt_prod_lot(lista,estado_aduana,hora_actual)
                 generate_manifest(id_lote,estado_aduana)
                 tree.delete(*tree.get_children())
@@ -293,6 +295,8 @@ class UI(tk.Frame):
         
         def ejecutar_en_segundo_plano():
             def leer_datos_pesa2():
+                global romper_ciclo 
+                romper_ciclo = False
                 def conectar_puertos(ports):
                     # Configuración de la conexión serial
                     baud_rate = 1200
@@ -303,9 +307,10 @@ class UI(tk.Frame):
                             # Intentar establecer la conexión serial
                             conexion = serial.Serial(port=puerto_serial, baudrate=baud_rate, bytesize=bytes_size, timeout=timeout)
                             print("Conexión establecida con éxito a", puerto_serial)
-                            
+                            datos = conexion.readline().decode().strip()
+                            if "kg" in datos:
                             # Salir de la función si la conexión es exitosa
-                            return conexion
+                                return conexion
                         
                         except serial.SerialException as e:
                             print("Error al conectar a", puerto_serial, ":", e)
@@ -313,9 +318,8 @@ class UI(tk.Frame):
                 try:
                     ports = find_serial_ports()
                     conexion = conectar_puertos(ports)
-                    global correr_hilo
-                    global romper_ciclo
-                    while correr_hilo:
+
+                    while True:
                         if romper_ciclo:
                             break
                         datos = conexion.readline().decode().strip()
@@ -518,7 +522,7 @@ class UI(tk.Frame):
         # ejecutar_en_segundo_plano()
         self.after(500, comprobar_guardado)
         
-        self.after(6000, ejecutar_en_segundo_plano)
+        ejecutar_en_segundo_plano()
 
 
 #esta funcion permite iniciar la venta desde otros Scrypts.
@@ -559,5 +563,6 @@ def iniciar_ventana_cp(root):
 #     root.set_theme_advanced('arc', brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
 #     root.withdraw()
 #     iniciar_ventana_cp(root)
-correr_hilo = True
+#variable global
+
 romper_ciclo = False
