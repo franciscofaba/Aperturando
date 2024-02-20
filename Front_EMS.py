@@ -219,7 +219,7 @@ class UI(tk.Frame):
     #esta funcion permite limitar a solo 13 caracteres el campo de texto de producto
     
         def limitar_longitud(*args):
-            
+            campo_de_texto_producto.configure(foreground="black")
             max_chars = 13  # Establece el número máximo de caracteres permitidos
             current_text = campo_de_texto_producto.get()
             if len(current_text) > max_chars:
@@ -230,6 +230,7 @@ class UI(tk.Frame):
             
             if len(current_text) == max_chars:
                 if current_text[0] == "C":
+                    campo_de_texto_producto.configure(foreground="red")
                     return
                 elif current_text[0] == "E":                    
 
@@ -583,12 +584,12 @@ def iniciar_ventana(root):
     APP.mainloop()
 
     
-# if __name__ == "__main__":
-#     root = ThemedTk(theme='arc')
-#     root.set_theme_advanced('arc', brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
-#     color = ttk.Style().lookup("TFrame", "background", default="white")
-#     root.withdraw()
-#     iniciar_ventana(root)
+if __name__ == "__main__":
+    root = ThemedTk(theme='arc')
+    root.set_theme_advanced('arc', brightness=1.0, saturation=2.0, hue=1.0, preserve_transparency=False, output_dir=None)
+    color = ttk.Style().lookup("TFrame", "background", default="white")
+    root.withdraw()
+    iniciar_ventana(root)
 
 
 #variable global

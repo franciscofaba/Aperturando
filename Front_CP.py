@@ -225,6 +225,7 @@ class UI(tk.Frame):
     #esta funcion permite limitar a solo 13 caracteres el campo de texto de producto
     
         def limitar_longitud(*args):
+            campo_de_texto_producto.configure(foreground="black")
             max_chars = 13  # Establece el número máximo de caracteres permitidos
             current_text = campo_de_texto_producto.get()
             if len(current_text) > max_chars:
@@ -233,6 +234,7 @@ class UI(tk.Frame):
                 campo_de_texto_producto.insert(0, new_text)
             if len(current_text) == max_chars:
                 if current_text[0] == "E":
+                    campo_de_texto_producto.configure(foreground="red")
                     return
                 elif current_text[0] == "C":                    
 
