@@ -122,7 +122,7 @@ class UI(tk.Frame):
             update = update_envios(enviodelete, datos)
 
 
-    #funcion para editar productos
+    #funcion para editar productosop8
     
         def set_cell_value(event): 
             
